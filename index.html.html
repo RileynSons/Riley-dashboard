@@ -1,0 +1,3379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier — Image Consulting Studio</title>
+<style>
+  :root {
+    --slate: #1C1F2E;
+    --slate-mid: #2E3245;
+    --slate-light: #4A4F6A;
+    --ivory: #F7F4EF;
+    --ivory-dark: #EDE9E2;
+    --rose: #C4998A;
+    --rose-light: #E8D5CE;
+    --gold: #B8965A;
+    --gold-light: #D4B87A;
+    --sage: #E8EDE8;
+    --sage-mid: #8A9E8A;
+    --text-primary: #1C1F2E;
+    --text-secondary: #5A5E72;
+    --text-muted: #8A8EA8;
+    --white: #FFFFFF;
+    --danger: #C0544A;
+    --success: #5A8A6A;
+    --warning: #B8965A;
+    --sidebar-w: 240px;
+    --transition: 0.2s ease;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--ivory);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ── */
+  .app { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--slate);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    height: 100vh;
+    z-index: 100;
+    border-right: 1px solid var(--gold);
+    transition: transform var(--transition);
+  }
+
+  .sidebar-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(184,150,90,0.25);
+  }
+
+  .sidebar-brand .brand-name {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    color: var(--ivory);
+    font-weight: normal;
+    text-transform: uppercase;
+  }
+
+  .sidebar-brand .brand-sub {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .sidebar-gold-rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold) 0%, transparent 100%);
+    margin: 0 24px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+  }
+
+  .nav-section-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 12px 24px 6px;
+    font-weight: 600;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    color: rgba(247,244,239,0.65);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover {
+    color: var(--ivory);
+    background: rgba(184,150,90,0.1);
+  }
+
+  .nav-item.active {
+    color: var(--ivory);
+    background: rgba(184,150,90,0.15);
+    border-left-color: var(--gold);
+  }
+
+  .nav-icon { font-size: 15px; opacity: 0.85; width: 18px; }
+
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(184,150,90,0.2);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--ivory-dark);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .topbar-title {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: normal;
+    color: var(--text-primary);
+    letter-spacing: 0.03em;
+  }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .content-area {
+    padding: 28px 32px;
+    max-width: 1200px;
+    width: 100%;
+  }
+
+  /* ── PANELS ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--ivory-dark);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .card-title {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    font-weight: normal;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--slate);
+    color: var(--ivory);
+  }
+  .btn-primary:hover { background: var(--slate-mid); }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--white);
+  }
+  .btn-gold:hover { background: var(--gold-light); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--ivory-dark);
+  }
+  .btn-outline:hover { border-color: var(--slate-light); color: var(--text-primary); background: var(--ivory); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 5px 8px;
+  }
+  .btn-ghost:hover { color: var(--text-primary); background: var(--ivory); border-radius: 4px; }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid rgba(192,84,74,0.3);
+  }
+  .btn-danger:hover { background: rgba(192,84,74,0.08); }
+
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-xs { padding: 3px 7px; font-size: 11px; }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 14px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--ivory-dark);
+    border-radius: 5px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--white);
+    transition: border-color var(--transition);
+    font-family: inherit;
+    outline: none;
+  }
+
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(184,150,90,0.12);
+  }
+
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .form-row { display: grid; gap: 12px; }
+  .form-row-2 { grid-template-columns: 1fr 1fr; }
+  .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-prospect { background: rgba(184,150,90,0.15); color: var(--gold); }
+  .badge-active { background: rgba(90,138,106,0.15); color: var(--success); }
+  .badge-completed { background: rgba(90,94,114,0.12); color: var(--text-secondary); }
+  .badge-paused { background: rgba(192,84,74,0.1); color: var(--danger); }
+
+  .badge-draft { background: rgba(90,94,114,0.12); color: var(--text-secondary); }
+  .badge-sent { background: rgba(184,150,90,0.15); color: var(--gold); }
+  .badge-accepted { background: rgba(90,138,106,0.15); color: var(--success); }
+  .badge-declined { background: rgba(192,84,74,0.1); color: var(--danger); }
+
+  .badge-pending { background: rgba(184,150,90,0.12); color: var(--gold); }
+  .badge-inprogress { background: rgba(90,94,114,0.12); color: var(--slate-light); }
+  .badge-complete { background: rgba(90,138,106,0.15); color: var(--success); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28,31,46,0.55);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(28,31,46,0.3);
+  }
+
+  .modal-lg { max-width: 780px; }
+
+  .modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--ivory-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    font-weight: normal;
+    letter-spacing: 0.03em;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--text-muted);
+    padding: 2px 6px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: color var(--transition);
+  }
+  .modal-close:hover { color: var(--text-primary); background: var(--ivory); }
+
+  .modal-body { padding: 20px 24px; }
+
+  .modal-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--ivory-dark);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* ── STATS GRID ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--ivory-dark);
+    border-radius: 8px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: Georgia, serif;
+    font-size: 32px;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--ivory-dark);
+  }
+
+  .data-table td {
+    padding: 12px 12px;
+    border-bottom: 1px solid var(--ivory-dark);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+
+  .data-table tr:hover td { background: rgba(247,244,239,0.6); }
+
+  /* ── CLIENT PIPELINE ── */
+  .pipeline-stages {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    overflow-x: auto;
+  }
+
+  .stage-col {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .stage-header {
+    padding: 10px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stage-body {
+    background: var(--ivory);
+    border: 1px solid var(--ivory-dark);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    min-height: 80px;
+    padding: 8px;
+  }
+
+  .stage-client-card {
+    background: var(--white);
+    border: 1px solid var(--ivory-dark);
+    border-radius: 5px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-size: 12px;
+  }
+
+  .stage-client-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 2px 8px rgba(184,150,90,0.15);
+  }
+
+  .stage-client-name { font-weight: 600; color: var(--text-primary); }
+  .stage-client-sub { color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+
+  .stage-inquiry .stage-header { background: var(--text-muted); }
+  .stage-consultation .stage-header { background: var(--gold); }
+  .stage-proposal .stage-header { background: #8A7AA8; }
+  .stage-active .stage-header { background: var(--success); }
+  .stage-delivered .stage-header { background: var(--slate-mid); }
+  .stage-followup .stage-header { background: var(--rose); }
+
+  /* ── CLIENT PROFILE ── */
+  .client-profile-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .client-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--rose-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: var(--rose);
+    flex-shrink: 0;
+    border: 2px solid var(--rose-light);
+  }
+
+  .profile-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--ivory-dark);
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+
+  .profile-tab {
+    padding: 9px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition);
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: inherit;
+    margin-bottom: -1px;
+  }
+
+  .profile-tab:hover { color: var(--text-primary); }
+  .profile-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .profile-panel { display: none; }
+  .profile-panel.active { display: block; }
+
+  /* ── NOTES ── */
+  .note-item {
+    border: 1px solid var(--ivory-dark);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: var(--white);
+    transition: border-color var(--transition);
+  }
+
+  .note-item:hover { border-color: rgba(184,150,90,0.4); }
+
+  .note-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .note-timestamp { font-size: 11px; color: var(--text-muted); }
+
+  .note-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .note-tag-call { background: rgba(184,150,90,0.15); color: var(--gold); }
+  .note-tag-meeting { background: rgba(90,138,106,0.15); color: var(--success); }
+  .note-tag-general { background: rgba(90,94,114,0.1); color: var(--text-secondary); }
+  .note-tag-email { background: rgba(196,153,138,0.2); color: var(--rose); }
+
+  .note-text { font-size: 13px; color: var(--text-primary); line-height: 1.55; }
+  .note-actions { display: flex; gap: 4px; margin-top: 8px; }
+
+  /* ── DELIVERABLES ── */
+  .deliverable-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--ivory-dark);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: var(--white);
+    transition: all var(--transition);
+  }
+
+  .deliverable-item.complete {
+    background: rgba(90,138,106,0.04);
+    border-color: rgba(90,138,106,0.25);
+  }
+
+  .deliverable-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--ivory-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all var(--transition);
+    font-size: 10px;
+    color: transparent;
+    background: transparent;
+  }
+
+  .deliverable-check.checked {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--white);
+  }
+
+  .deliverable-name { flex: 1; font-size: 13px; font-weight: 500; }
+  .deliverable-name.done { text-decoration: line-through; color: var(--text-muted); }
+  .deliverable-due { font-size: 11px; color: var(--text-muted); }
+
+  /* ── EVENTS ── */
+  .event-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--ivory-dark);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: var(--white);
+    align-items: flex-start;
+    transition: border-color var(--transition);
+  }
+
+  .event-item:hover { border-color: rgba(184,150,90,0.35); }
+
+  .event-date-badge {
+    background: var(--slate);
+    color: var(--ivory);
+    border-radius: 6px;
+    padding: 6px 10px;
+    text-align: center;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+
+  .event-day { font-family: Georgia, serif; font-size: 18px; line-height: 1; }
+  .event-month { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-top: 2px; }
+
+  .event-info { flex: 1; }
+  .event-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .event-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+  .event-notes { font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-style: italic; }
+
+  /* ── QUOTE BUILDER ── */
+  .quote-line {
+    display: grid;
+    grid-template-columns: 1fr 80px 90px 90px 36px;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .quote-total-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0;
+    border-top: 2px solid var(--ivory-dark);
+    margin-top: 8px;
+    gap: 16px;
+    align-items: center;
+    font-size: 14px;
+  }
+
+  .quote-total-amount {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: var(--text-primary);
+  }
+
+  /* ── UTILS ── */
+  .flex { display: flex; }
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .flex-end { display: flex; justify-content: flex-end; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .gap-16 { gap: 16px; }
+  .mb-0 { margin-bottom: 0; }
+  .mb-8 { margin-bottom: 8px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-24 { margin-bottom: 24px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .text-muted { color: var(--text-muted); }
+  .text-sm { font-size: 12px; }
+  .text-xs { font-size: 11px; }
+  .font-serif { font-family: Georgia, serif; }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 0.03em;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--ivory-dark);
+    margin: 20px 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state-icon { font-size: 32px; margin-bottom: 10px; }
+  .empty-state-text { font-size: 13px; }
+
+  /* ── MOBILE TOGGLE ── */
+  .mobile-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 200;
+    width: 48px;
+    height: 48px;
+    background: var(--slate);
+    color: var(--ivory);
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(28,31,46,0.35);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28,31,46,0.4);
+    z-index: 99;
+  }
+
+  /* ── GRID LAYOUTS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* ── UPCOMING STRIP ── */
+  .upcoming-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 24px;
+  }
+
+  .upcoming-chip {
+    background: var(--white);
+    border: 1px solid var(--ivory-dark);
+    border-radius: 6px;
+    padding: 10px 14px;
+    min-width: 170px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+
+  .upcoming-chip:hover { border-color: var(--gold); }
+  .upcoming-chip-date { font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .upcoming-chip-title { font-size: 13px; font-weight: 600; margin-top: 3px; }
+  .upcoming-chip-client { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── QUOTE CARD ── */
+  .quote-card {
+    border: 1px solid var(--ivory-dark);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .quote-card-header {
+    padding: 12px 16px;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--ivory-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .quote-card-body { padding: 14px 16px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    .sidebar {
+      transform: translateX(-100%);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    .sidebar-overlay.open { display: block; }
+    .main { margin-left: 0; }
+    .content-area { padding: 16px; }
+    .topbar { padding: 0 16px; }
+    .mobile-toggle { display: flex; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+    .quote-line { grid-template-columns: 1fr 60px 70px 70px 30px; }
+  }
+
+  @media (max-width: 400px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── SEARCH ── */
+  .search-input {
+    padding: 7px 12px 7px 32px;
+    border: 1px solid var(--ivory-dark);
+    border-radius: 5px;
+    font-size: 13px;
+    background: var(--ivory) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%238A8EA8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E") no-repeat 10px center;
+    outline: none;
+    color: var(--text-primary);
+    transition: border-color var(--transition);
+    width: 200px;
+  }
+
+  .search-input:focus { border-color: var(--gold); background-color: var(--white); width: 240px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    height: 4px;
+    background: var(--ivory-dark);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--rose));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--ivory-dark); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+  /* ── SALES & ORDERS ── */
+  .chart-wrap { position:relative; width:100%; }
+  .bar-chart { display:flex; align-items:flex-end; gap:6px; height:160px; padding: 0 4px; }
+  .bar-col { display:flex; flex-direction:column; align-items:center; flex:1; min-width:0; }
+  .bar { border-radius:4px 4px 0 0; width:100%; transition: height 0.4s ease; cursor:default; min-height:2px; }
+  .bar-label { font-size:10px; color:var(--text-muted); margin-top:5px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; }
+  .bar-val { font-size:9px; color:var(--text-secondary); margin-bottom:2px; font-weight:600; }
+  .kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+  .kpi-box { background:var(--ivory); border:1px solid var(--ivory-dark); border-radius:7px; padding:14px 16px; }
+  .kpi-label { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+  .kpi-value { font-family:Georgia,serif; font-size:26px; color:var(--text-primary); line-height:1; }
+  .kpi-sub { font-size:11px; color:var(--text-muted); margin-top:3px; }
+  .kpi-up { color:var(--success); } .kpi-down { color:var(--danger); }
+  .forecast-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--ivory-dark); border-radius:6px; margin-bottom:8px; background:var(--white); }
+  .forecast-bar-wrap { flex:1; height:8px; background:var(--ivory-dark); border-radius:4px; overflow:hidden; }
+  .forecast-bar-fill { height:100%; border-radius:4px; }
+  .order-row { display:grid; grid-template-columns:2fr 1fr 1fr 1fr 100px 80px; gap:10px; align-items:center; padding:11px 14px; border:1px solid var(--ivory-dark); border-radius:6px; margin-bottom:7px; background:var(--white); font-size:13px; transition:border-color .2s; }
+  .order-row:hover { border-color:rgba(184,150,90,.35); }
+  .order-status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .dot-ordered { background:#B8965A; } .dot-production { background:#8A7AA8; } .dot-ready { background:var(--success); } .dot-delivered { background:var(--text-muted); }
+  .tab-bar { display:flex; gap:0; border-bottom:1px solid var(--ivory-dark); margin-bottom:20px; }
+  .tab-btn { padding:8px 18px; cursor:pointer; font-size:13px; color:var(--text-secondary); border-bottom:2px solid transparent; background:none; border-top:none; border-left:none; border-right:none; font-family:inherit; margin-bottom:-1px; transition:all .2s; }
+  .tab-btn:hover { color:var(--text-primary); }
+  .tab-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
+  .tab-panel { display:none; } .tab-panel.active { display:block; }
+  .sale-row { display:grid; grid-template-columns:1fr 1fr 100px 110px 40px; gap:10px; align-items:center; padding:10px 12px; border:1px solid var(--ivory-dark); border-radius:6px; margin-bottom:7px; background:var(--white); font-size:13px; }
+  .sale-row:hover { border-color:rgba(184,150,90,.3); }
+  .period-selector { display:flex; gap:6px; margin-bottom:16px; }
+  .period-btn { padding:5px 14px; border-radius:20px; border:1px solid var(--ivory-dark); background:var(--white); cursor:pointer; font-size:12px; color:var(--text-secondary); transition:all .2s; }
+  .period-btn.active { background:var(--slate); color:var(--ivory); border-color:var(--slate); }
+  .source-tag { display:inline-flex; align-items:center; font-size:10px; padding:1px 6px; border-radius:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+  .source-calendly { background:rgba(0,106,255,.1); color:#006AFF; } .source-typeform { background:rgba(38,37,91,.1); color:#26255B; } .source-ac { background:rgba(23,156,125,.1); color:#179C7D; } .source-manual { background:rgba(90,94,114,.1); color:var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name">Atelier</div>
+      <div class="brand-sub">Image Consulting Studio</div>
+    </div>
+    <div class="sidebar-gold-rule"></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Studio</div>
+      <div class="nav-item active" data-panel="dashboard" onclick="navigate('dashboard', this)">
+        <span class="nav-icon">⬡</span> Dashboard
+      </div>
+      <div class="nav-item" data-panel="clients" onclick="navigate('clients', this)">
+        <span class="nav-icon">◈</span> Clients
+      </div>
+      <div class="nav-item" data-panel="pipeline" onclick="navigate('pipeline', this)">
+        <span class="nav-icon">◫</span> Journey Pipeline
+      </div>
+      <div class="nav-section-label">Work</div>
+      <div class="nav-item" data-panel="quotes" onclick="navigate('quotes', this)">
+        <span class="nav-icon">◎</span> Quotes & Pricing
+      </div>
+      <div class="nav-item" data-panel="deliverables" onclick="navigate('deliverables', this)">
+        <span class="nav-icon">◻</span> Deliverables
+      </div>
+      <div class="nav-item" data-panel="notes" onclick="navigate('notes', this)">
+        <span class="nav-icon">◌</span> Notes
+      </div>
+      <div class="nav-section-label">Schedule</div>
+      <div class="nav-item" data-panel="events" onclick="navigate('events', this)">
+        <span class="nav-icon">◷</span> Events & Calendar
+      </div>
+      <div class="nav-section-label">Sales</div>
+      <div class="nav-item" data-panel="sales" onclick="navigate('sales', this)">
+        <span class="nav-icon">&#9650;</span> Sales Tracker
+      </div>
+      <div class="nav-item" data-panel="orders" onclick="navigate('orders', this)">
+        <span class="nav-icon">&#9723;</span> Order Tracker
+      </div>
+      <div class="nav-section-label">System</div>
+      <div class="nav-item" data-panel="settings" onclick="navigate('settings', this)">
+        <span class="nav-icon">&#9881;</span> Integrations
+      </div>
+    </nav>
+    <div class="sidebar-footer">© 2025 Atelier Studio</div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <input type="text" class="search-input" id="globalSearch" placeholder="Search clients…" oninput="globalSearchClients(this.value)">
+        <button class="btn btn-gold btn-sm" onclick="openAddClientModal()">+ New Client</button>
+      </div>
+    </header>
+
+    <div class="content-area">
+
+      <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="grid-2 mb-24">
+          <div class="card">
+            <div class="card-title">Upcoming This Week</div>
+            <div id="dashUpcoming"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Outstanding Deliverables</div>
+            <div id="dashDeliverables"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Pending Quotes</div>
+            <div id="dashQuotes"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Activity</div>
+            <div id="dashActivity"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════════ CLIENTS ═══════════════════ -->
+      <div class="panel" id="panel-clients">
+        <div class="section-header">
+          <h1 class="section-title">Clients</h1>
+          <div class="flex gap-8">
+            <select class="form-select" style="width:130px;font-size:12px;" onchange="filterClients(this.value)" id="clientFilterStatus">
+              <option value="">All Statuses</option>
+              <option value="Prospect">Prospect</option>
+              <option value="Active">Active</option>
+              <option value="Completed">Completed</option>
+              <option value="Paused">Paused</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddClientModal()">+ Add Client</button>
+          </div>
+        </div>
+
+        <div class="card mb-0" id="clientsTableWrap">
+          <table class="data-table" id="clientsTable">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Status</th>
+                <th>Stage</th>
+                <th>Start Date</th>
+                <th>Summary</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══════════════════ PIPELINE ═══════════════════ -->
+      <div class="panel" id="panel-pipeline">
+        <div class="section-header">
+          <h1 class="section-title">Client Journey Pipeline</h1>
+        </div>
+        <div class="pipeline-stages" id="pipelineStages"></div>
+      </div>
+
+      <!-- ═══════════════════ QUOTES ═══════════════════ -->
+      <div class="panel" id="panel-quotes">
+        <div class="section-header">
+          <h1 class="section-title">Quotes & Pricing</h1>
+          <button class="btn btn-primary" onclick="openAddQuoteModal()">+ New Quote</button>
+        </div>
+        <div id="quotesListWrap"></div>
+      </div>
+
+      <!-- ═══════════════════ DELIVERABLES ═══════════════════ -->
+      <div class="panel" id="panel-deliverables">
+        <div class="section-header">
+          <h1 class="section-title">Designs & Deliverables</h1>
+          <div class="flex gap-8 align-items-center">
+            <select class="form-select" style="width:160px;font-size:12px;" onchange="filterDeliverables(this.value)" id="delivClientFilter">
+              <option value="">All Clients</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddDeliverableModal()">+ Add Item</button>
+          </div>
+        </div>
+        <div id="deliverablesWrap"></div>
+      </div>
+
+      <!-- ═══════════════════ NOTES ═══════════════════ -->
+      <div class="panel" id="panel-notes">
+        <div class="section-header">
+          <h1 class="section-title">Notes</h1>
+          <div class="flex gap-8">
+            <select class="form-select" style="width:160px;font-size:12px;" onchange="filterNotes(this.value)" id="noteClientFilter">
+              <option value="">All Clients</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddNoteModal()">+ Add Note</button>
+          </div>
+        </div>
+        <div id="notesWrap"></div>
+      </div>
+
+      <!-- ═══════════════════ EVENTS ═══════════════════ -->
+      <div class="panel" id="panel-events">
+        <div class="section-header">
+          <h1 class="section-title">Events & Calendar</h1>
+          <div class="flex gap-8">
+            <select class="form-select" style="width:160px;font-size:12px;" onchange="filterEvents(this.value)" id="eventClientFilter">
+              <option value="">All Clients</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddEventModal()">+ Add Event</button>
+          </div>
+        </div>
+        <div id="eventsWrap"></div>
+      </div>
+
+
+      <!-- ═══ SALES TRACKER ═══ -->
+      <div class="panel" id="panel-sales">
+        <div class="section-header">
+          <h1 class="section-title">Sales Tracker</h1>
+          <button class="btn btn-primary" onclick="openAddSaleModal()">+ Log Sale</button>
+        </div>
+        <div class="period-selector" id="salesPeriodSelector">
+          <button class="period-btn active" onclick="setSalesPeriod('day',this)">Today</button>
+          <button class="period-btn" onclick="setSalesPeriod('week',this)">This Week</button>
+          <button class="period-btn" onclick="setSalesPeriod('month',this)">This Month</button>
+          <button class="period-btn" onclick="setSalesPeriod('quarter',this)">Quarter</button>
+          <button class="period-btn" onclick="setSalesPeriod('year',this)">Year</button>
+          <button class="period-btn" onclick="setSalesPeriod('all',this)">All Time</button>
+        </div>
+        <div class="kpi-row" id="salesKpis"></div>
+        <div class="grid-2 mb-24">
+          <div class="card"><div class="card-title">Monthly Revenue</div><div id="salesBarChart"></div></div>
+          <div class="card">
+            <div class="card-title">Sales Forecaster</div>
+            <div id="forecastWrap"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="flex-between mb-16">
+            <div class="card-title mb-0">Sales Entries</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="salesPeriodLabel"></div>
+          </div>
+          <div id="salesListWrap"></div>
+        </div>
+      </div>
+
+      <!-- ═══ ORDER TRACKER ═══ -->
+      <div class="panel" id="panel-orders">
+        <div class="section-header">
+          <h1 class="section-title">Order Tracker</h1>
+          <div class="flex gap-8">
+            <select class="form-select" style="width:160px;font-size:12px;" onchange="filterOrders(this.value)" id="orderClientFilter"><option value="">All Clients</option></select>
+            <select class="form-select" style="width:140px;font-size:12px;" onchange="filterOrderStatus(this.value)" id="orderStatusFilter">
+              <option value="">All Statuses</option>
+              <option>Ordered</option><option>In Production</option><option>Ready</option><option>Delivered</option><option>Cancelled</option>
+            </select>
+            <button class="btn btn-primary" onclick="openAddOrderModal()">+ New Order</button>
+          </div>
+        </div>
+        <div class="kpi-row" id="orderKpis"></div>
+        <div class="card mb-0" id="ordersWrap"></div>
+      </div>
+
+      <!-- ═══ SETTINGS ═══ -->
+      <div class="panel" id="panel-settings">
+        <div class="section-header"><h1 class="section-title">Integrations &amp; Settings</h1></div>
+        <div class="card mb-24" style="background:rgba(184,150,90,0.06);border-color:rgba(184,150,90,0.3);">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <div style="font-size:22px;">&#128274;</div>
+            <div>
+              <div style="font-weight:600;margin-bottom:4px;">Your keys are stored only on this device</div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">API keys are saved in your browser&#39;s localStorage only. They are never sent anywhere except directly to Calendly, Typeform, or ActiveCampaign when you click Sync. Treat them like passwords.</div>
+            </div>
+          </div>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
+            <div class="integration-logo" style="background:rgba(0,106,255,.1);font-size:20px;">&#128197;</div>
+            <div style="flex:1;"><div style="font-weight:600;">Calendly</div><div class="integration-status disconnected" id="calendly-status">Not connected</div></div>
+            <button class="btn btn-outline btn-sm" id="calendly-test-btn" onclick="testCalendly()" style="display:none;">Test</button>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Pulls upcoming bookings into Events. New bookings auto-create Prospect clients.</div>
+          <div class="form-group mb-8"><label class="form-label">Personal Access Token</label>
+            <div class="key-input-wrap"><input class="form-input" id="calendly-key" type="password" placeholder="Paste your Calendly Personal Access Token" oninput="onKeyInput('calendly')"><button class="key-toggle-btn" onclick="toggleKeyVisibility('calendly-key',this)">Show</button></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="saveIntegrationKey('calendly')">Save Key</button>
+            <button class="btn btn-outline btn-sm" onclick="syncCalendly()">&#8635; Sync Now</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="clearKey('calendly')">Clear</button>
+          </div>
+          <div id="calendly-result"></div>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Calendly &rarr; Account Settings &rarr; Integrations &rarr; API &amp; Webhooks &rarr; Generate New Token</p>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
+            <div class="integration-logo" style="background:rgba(38,37,91,.1);font-size:20px;">&#128203;</div>
+            <div style="flex:1;"><div style="font-weight:600;">Typeform</div><div class="integration-status disconnected" id="typeform-status">Not connected</div></div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Pulls form submissions and creates new Prospect clients with answers saved as notes.</div>
+          <div class="form-row form-row-2 mb-8">
+            <div class="form-group mb-0"><label class="form-label">Personal API Token</label>
+              <div class="key-input-wrap"><input class="form-input" id="typeform-key" type="password" placeholder="Paste your Typeform token" oninput="onKeyInput('typeform')"><button class="key-toggle-btn" onclick="toggleKeyVisibility('typeform-key',this)">Show</button></div>
+            </div>
+            <div class="form-group mb-0"><label class="form-label">Form ID (optional)</label><input class="form-input" id="typeform-form-id" placeholder="Leave blank for all forms"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="saveIntegrationKey('typeform')">Save Key</button>
+            <button class="btn btn-outline btn-sm" onclick="syncTypeform()">&#8635; Sync Now</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="clearKey('typeform')">Clear</button>
+          </div>
+          <div id="typeform-result"></div>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">Typeform &rarr; Profile photo &rarr; Settings &rarr; Personal tokens &rarr; Generate a new token</p>
+        </div>
+        <div class="integration-card">
+          <div class="integration-header">
+            <div class="integration-logo" style="background:rgba(23,156,125,.1);font-size:20px;">&#128232;</div>
+            <div style="flex:1;"><div style="font-weight:600;">ActiveCampaign</div><div class="integration-status disconnected" id="ac-status">Not connected</div></div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Syncs your ActiveCampaign contacts into the Clients list as Prospects.</div>
+          <div class="form-row form-row-2 mb-8">
+            <div class="form-group mb-0"><label class="form-label">Account URL</label><input class="form-input" id="ac-url" placeholder="https://yourname.api-activecampaign.com" oninput="onKeyInput('ac')"></div>
+            <div class="form-group mb-0"><label class="form-label">API Key</label>
+              <div class="key-input-wrap"><input class="form-input" id="ac-key" type="password" placeholder="Paste your AC API key" oninput="onKeyInput('ac')"><button class="key-toggle-btn" onclick="toggleKeyVisibility('ac-key',this)">Show</button></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" onclick="saveIntegrationKey('ac')">Save Keys</button>
+            <button class="btn btn-outline btn-sm" onclick="syncActiveCampaign()">&#8635; Sync Contacts</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--danger);" onclick="clearKey('ac')">Clear</button>
+          </div>
+          <div id="ac-result"></div>
+          <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">ActiveCampaign &rarr; Settings (gear icon) &rarr; Developer &rarr; copy both API URL and API Key</p>
+        </div>
+        <div class="card mt-16">
+          <div class="card-title">Auto-Sync</div>
+          <div class="form-row form-row-2">
+            <div><label class="form-label">Sync on dashboard open</label>
+              <select class="form-select" id="autoSyncSetting" onchange="saveAutoSync(this.value)">
+                <option value="off">Off &mdash; sync manually only</option>
+                <option value="on">On &mdash; sync every time I open the dashboard</option>
+              </select>
+            </div>
+            <div><label class="form-label">Last synced</label><div class="form-input" style="background:var(--ivory);cursor:default;" id="lastSyncedDisplay">Never</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </main>
+</div>
+
+<!-- ─── MOBILE TOGGLE ─── -->
+<button class="mobile-toggle" onclick="toggleMobileSidebar()">☰</button>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- ADD/EDIT CLIENT -->
+<div class="modal-overlay" id="modal-client">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="clientModalTitle">New Client</div>
+      <button class="modal-close" onclick="closeModal('modal-client')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editClientId">
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input class="form-input" id="clientFirstName" placeholder="Sophie">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input class="form-input" id="clientLastName" placeholder="Laurent">
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="clientEmail" type="email" placeholder="sophie@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" id="clientPhone" placeholder="+1 (555) 000-0000">
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="clientStatus">
+            <option>Prospect</option>
+            <option>Active</option>
+            <option>Completed</option>
+            <option>Paused</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stage</label>
+          <select class="form-select" id="clientStage">
+            <option>Inquiry</option>
+            <option>Consultation</option>
+            <option>Proposal</option>
+            <option>Active</option>
+            <option>Delivered</option>
+            <option>Follow-up</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-input" id="clientStartDate" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Budget (approx.)</label>
+          <input class="form-input" id="clientBudget" placeholder="$0">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Summary / Brief</label>
+        <textarea class="form-textarea" id="clientSummary" placeholder="Client goals, style preferences, key context…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-client')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT PROFILE -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="profileModalTitle">Client Profile</div>
+      <button class="modal-close" onclick="closeModal('modal-profile')">×</button>
+    </div>
+    <div class="modal-body" id="profileModalBody"></div>
+  </div>
+</div>
+
+<!-- ADD NOTE -->
+<div class="modal-overlay" id="modal-note">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="noteModalTitle">Add Note</div>
+      <button class="modal-close" onclick="closeModal('modal-note')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editNoteId">
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Client *</label>
+          <select class="form-select" id="noteClientId"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="noteTag">
+            <option value="general">General</option>
+            <option value="call">Call</option>
+            <option value="meeting">Meeting</option>
+            <option value="email">Email</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Note *</label>
+        <textarea class="form-textarea" id="noteText" placeholder="Write your note here…" style="min-height:120px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-note')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EVENT -->
+<div class="modal-overlay" id="modal-event">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="eventModalTitle">Add Event</div>
+      <button class="modal-close" onclick="closeModal('modal-event')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editEventId">
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input class="form-input" id="eventTitle" placeholder="Initial Style Consultation">
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Client</label>
+          <select class="form-select" id="eventClientId"><option value="">— General —</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="eventType">
+            <option>Consultation</option>
+            <option>Shopping Trip</option>
+            <option>Fitting</option>
+            <option>Delivery</option>
+            <option>Follow-up Call</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Date *</label>
+          <input class="form-input" id="eventDate" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input class="form-input" id="eventTime" type="time">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input class="form-input" id="eventLocation" placeholder="Studio / Client's home / Zoom">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="eventNotes" placeholder="Any prep notes or details…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-event')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD DELIVERABLE -->
+<div class="modal-overlay" id="modal-deliverable">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="delivModalTitle">Add Deliverable</div>
+      <button class="modal-close" onclick="closeModal('modal-deliverable')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editDelivId">
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Client *</label>
+          <select class="form-select" id="delivClientId"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="delivStatus">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Complete">Complete</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Item Name *</label>
+        <input class="form-input" id="delivName" placeholder="Mood Board, Wardrobe Plan…">
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="delivCategory">
+            <option>Design</option>
+            <option>Document</option>
+            <option>Presentation</option>
+            <option>Shopping</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input class="form-input" id="delivDue" type="date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="delivNotes" placeholder="Any details…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-deliverable')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDeliverable()">Save Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD QUOTE -->
+<div class="modal-overlay" id="modal-quote">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div class="modal-title" id="quoteModalTitle">New Quote</div>
+      <button class="modal-close" onclick="closeModal('modal-quote')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editQuoteId">
+      <div class="form-row form-row-2 mb-16">
+        <div class="form-group mb-0">
+          <label class="form-label">Client *</label>
+          <select class="form-select" id="quoteClientId"></select>
+        </div>
+        <div class="form-group mb-0">
+          <label class="form-label">Quote Status</label>
+          <select class="form-select" id="quoteStatus">
+            <option>Draft</option>
+            <option>Sent</option>
+            <option>Accepted</option>
+            <option>Declined</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quote Title</label>
+        <input class="form-input" id="quoteTitle" placeholder="Full Style Consultation Package">
+      </div>
+
+      <div class="divider"></div>
+      <div class="flex-between mb-8">
+        <div class="form-label mb-0" style="margin:0;">Line Items</div>
+        <button class="btn btn-outline btn-sm" onclick="addQuoteLine()">+ Add Line</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 80px 90px 90px 36px;gap:8px;margin-bottom:6px;padding:0 2px;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Description</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Qty</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Unit Price</span>
+        <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Total</span>
+        <span></span>
+      </div>
+
+      <div id="quoteLinesContainer"></div>
+
+      <div class="quote-total-row">
+        <span style="font-size:12px;color:var(--text-muted);letter-spacing:.05em;text-transform:uppercase;">Total</span>
+        <span class="quote-total-amount" id="quoteTotalDisplay">$0.00</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notes / Terms</label>
+        <textarea class="form-textarea" id="quoteNotes" placeholder="Payment terms, inclusions, validity period…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-quote')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQuote()">Save Quote</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <div class="modal-title">Confirm Delete</div>
+      <button class="modal-close" onclick="closeModal('modal-confirm')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-secondary);" id="confirmDeleteMsg">Are you sure you want to delete this item? This cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-confirm')">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ADD SALE -->
+<div class="modal-overlay" id="modal-sale">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="saleModalTitle">Log Sale</div><button class="modal-close" onclick="closeModal('modal-sale')">&#215;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editSaleId">
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Client *</label><select class="form-select" id="saleClientId"></select></div>
+        <div class="form-group"><label class="form-label">Amount *</label><input class="form-input" id="saleAmount" type="number" min="0" step="0.01" placeholder="0.00"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="saleDescription" placeholder="Style consultation, wardrobe package..."></div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="saleDate" type="date"></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-select" id="saleCategory">
+            <option>Consultation</option><option>Wardrobe Build</option><option>Shopping Service</option><option>Style Guide</option><option>Package</option><option>Retainer</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Payment Status</label>
+          <select class="form-select" id="salePaymentStatus">
+            <option>Paid</option><option>Deposit Paid</option><option>Pending</option><option>Overdue</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Quote Reference</label><select class="form-select" id="saleQuoteRef"><option value="">None</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="saleNotes"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modal-sale')">Cancel</button><button class="btn btn-primary" onclick="saveSale()">Save Sale</button></div>
+  </div>
+</div>
+
+<!-- ADD ORDER -->
+<div class="modal-overlay" id="modal-order">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="orderModalTitle">New Order</div><button class="modal-close" onclick="closeModal('modal-order')">&#215;</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editOrderId">
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Client *</label><select class="form-select" id="orderClientId"></select></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" id="orderStatus">
+            <option>Ordered</option><option>In Production</option><option>Ready</option><option>Delivered</option><option>Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Item / Description *</label><input class="form-input" id="orderItem" placeholder="Cashmere blazer, custom suit..."></div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Supplier / Brand</label><input class="form-input" id="orderSupplier" placeholder="Sandro, Net-a-Porter..."></div>
+        <div class="form-group"><label class="form-label">Category</label>
+          <select class="form-select" id="orderCategory">
+            <option>Clothing</option><option>Accessories</option><option>Shoes</option><option>Tailoring</option><option>Custom</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row form-row-3">
+        <div class="form-group"><label class="form-label">Cost (to you)</label><input class="form-input" id="orderCost" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="form-group"><label class="form-label">Price (to client)</label><input class="form-input" id="orderPrice" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="form-group"><label class="form-label">Qty</label><input class="form-input" id="orderQty" type="number" min="1" value="1"></div>
+      </div>
+      <div class="form-row form-row-2">
+        <div class="form-group"><label class="form-label">Order Date</label><input class="form-input" id="orderDate" type="date"></div>
+        <div class="form-group"><label class="form-label">Expected Delivery</label><input class="form-input" id="orderDue" type="date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes / Tracking</label><textarea class="form-textarea" id="orderNotes"></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modal-order')">Cancel</button><button class="btn btn-primary" onclick="saveOrder()">Save Order</button></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  DATA LAYER
+// ═══════════════════════════════════════════════════════════════
+
+const KEYS = { clients:'atelier_clients', notes:'atelier_notes', events:'atelier_events', deliverables:'atelier_deliverables', quotes:'atelier_quotes', sales:'atelier_sales', orders:'atelier_orders', integrations:'atelier_integrations', syncMeta:'atelier_syncmeta' };
+
+function load(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch(e){ return null; } }
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ── Default demo data
+const DEMO_CLIENTS = [
+  { id:'c1', firstName:'Margaux', lastName:'Delacroix', email:'margaux@example.com', phone:'+1 310 555 0142', status:'Active', stage:'Active', startDate:'2025-01-10', budget:'$4,200', summary:'Executive wardrobe refresh. French-inspired minimalism, neutrals with bold accents. Works in finance, needs versatile pieces for NYC + travel.' },
+  { id:'c2', firstName:'Priya', lastName:'Sharma', email:'priya.s@example.com', phone:'+1 212 555 0387', status:'Active', stage:'Proposal', startDate:'2025-02-18', budget:'$2,800', summary:'Wedding guest wardrobe build for upcoming season. Prefers rich jewel tones. Budget-conscious but values quality investment pieces.' },
+  { id:'c3', firstName:'James', lastName:'Whitfield', email:'jwhitfield@example.com', phone:'+1 415 555 0221', status:'Prospect', stage:'Inquiry', startDate:'2025-03-05', budget:'$1,500', summary:'Startup founder rebrand — casual to elevated casual. Needs to look polished without losing his laid-back identity.' },
+  { id:'c4', firstName:'Camille', lastName:'Fontaine', email:'camille.f@example.com', phone:'+1 646 555 0093', status:'Active', stage:'Consultation', startDate:'2025-02-28', budget:'$3,600', summary:'Creative director transitioning from agency to freelance. Building a signature personal brand aesthetic. Loves architecture and art.' },
+  { id:'c5', firstName:'Elena', lastName:'Vasquez', email:'elena.v@example.com', phone:'+1 718 555 0445', status:'Completed', stage:'Follow-up', startDate:'2024-11-01', budget:'$5,000', summary:'Completed full wardrobe audit + luxury build. Loves the results. Due for seasonal follow-up capsule in spring.' },
+];
+
+const DEMO_NOTES = [
+  { id:'n1', clientId:'c1', tag:'meeting', text:'Initial discovery meeting. Margaux wants a complete capsule wardrobe. Key challenge: she travels 3 weeks/month so everything must pack well. Loves Loro Piana and Max Mara. Dislikes prints entirely.', createdAt:'2025-01-10T10:30:00Z' },
+  { id:'n2', clientId:'c1', tag:'call', text:'Follow-up call re: the grey cashmere blazer from Sandro. She loved it and has already worn it 4 times. Confirmed deposit paid.', createdAt:'2025-01-22T14:15:00Z' },
+  { id:'n3', clientId:'c2', tag:'meeting', text:'First consultation. Priya showed inspiration images — she loves Anita Ko jewellery and Zimmermann. Her sister\'s wedding is in October so we have a clear deadline.', createdAt:'2025-02-18T11:00:00Z' },
+  { id:'n4', clientId:'c4', tag:'general', text:'Camille sent mood board references over email. Strong architecture influence — Bauhaus meets Tokyo street. Bold silhouettes, monochromatic palettes with one-statement texture piece per outfit.', createdAt:'2025-03-01T09:45:00Z' },
+  { id:'n5', clientId:'c5', tag:'email', text:'Sent spring check-in email. Elena replied enthusiastically — wants to do a lighter seasonal refresh in April. Budget approx $1,200 for spring additions.', createdAt:'2025-03-10T16:00:00Z' },
+];
+
+const today = new Date();
+function daysFromNow(d) { const dt = new Date(); dt.setDate(dt.getDate()+d); return dt.toISOString().split('T')[0]; }
+
+const DEMO_EVENTS = [
+  { id:'e1', clientId:'c1', title:'Wardrobe Delivery Session', type:'Delivery', date: daysFromNow(2), time:'10:00', location:'Client\'s Upper East Side residence', notes:'Bring final wardrobe pieces + styling guide.' },
+  { id:'e2', clientId:'c4', title:'Initial Style Consultation', type:'Consultation', date: daysFromNow(4), time:'14:30', location:'Studio', notes:'Prepare vision board and style questionnaire.' },
+  { id:'e3', clientId:'c2', title:'Shopping Day — Bergdorf & Saks', type:'Shopping Trip', date: daysFromNow(8), time:'10:00', location:'Midtown Manhattan', notes:'Focus on occasion wear for wedding season. Max budget $1,500 today.' },
+  { id:'e4', clientId:'c3', title:'Discovery Consultation', type:'Consultation', date: daysFromNow(12), time:'11:00', location:'Zoom', notes:'First meeting. Keep it light — explore his vision.' },
+  { id:'e5', clientId:'c5', title:'Spring Check-in Call', type:'Follow-up Call', date: daysFromNow(18), time:'15:00', location:'Phone', notes:'Discuss spring capsule additions.' },
+];
+
+const DEMO_DELIVERABLES = [
+  { id:'d1', clientId:'c1', name:'Signature Mood Board', category:'Design', status:'Complete', due:'2025-01-20', notes:'' },
+  { id:'d2', clientId:'c1', name:'Wardrobe Audit Report', category:'Document', status:'Complete', due:'2025-01-25', notes:'' },
+  { id:'d3', clientId:'c1', name:'Capsule Wardrobe Plan', category:'Document', status:'Complete', due:'2025-02-05', notes:'' },
+  { id:'d4', clientId:'c1', name:'Style Guide PDF', category:'Presentation', status:'In Progress', due: daysFromNow(5), notes:'Final section on occasion dressing still in progress.' },
+  { id:'d5', clientId:'c2', name:'Style Questionnaire', category:'Document', status:'Complete', due:'2025-02-20', notes:'' },
+  { id:'d6', clientId:'c2', name:'Mood Board — Wedding Season', category:'Design', status:'In Progress', due: daysFromNow(7), notes:'Pending final colour palette confirmation.' },
+  { id:'d7', clientId:'c2', name:'Occasion Wear Shortlist', category:'Shopping', status:'Pending', due: daysFromNow(14), notes:'' },
+  { id:'d8', clientId:'c4', name:'Creative Direction Mood Board', category:'Design', status:'Pending', due: daysFromNow(10), notes:'Wait until post-consultation.' },
+  { id:'d9', clientId:'c4', name:'Brand Identity Style Guide', category:'Presentation', status:'Pending', due: daysFromNow(20), notes:'' },
+  { id:'d10', clientId:'c3', name:'Initial Style Assessment', category:'Document', status:'Pending', due: daysFromNow(16), notes:'' },
+];
+
+const DEMO_QUOTES = [
+  {
+    id:'q1', clientId:'c1', title:'Full Executive Wardrobe Consultation', status:'Accepted',
+    lines:[
+      { desc:'Style Discovery & Wardrobe Audit (3hr)', qty:1, price:450 },
+      { desc:'Personal Shopping Day (full day)', qty:1, price:850 },
+      { desc:'Signature Style Guide (PDF)', qty:1, price:600 },
+      { desc:'Capsule Wardrobe Curation Plan', qty:1, price:380 },
+      { desc:'Follow-up Fitting Session (2hr)', qty:2, price:220 },
+    ],
+    notes:'50% deposit required to confirm. Remaining balance due on delivery. Valid 30 days.',
+    createdAt:'2025-01-10T00:00:00Z'
+  },
+  {
+    id:'q2', clientId:'c2', title:'Wedding Season Wardrobe Package', status:'Sent',
+    lines:[
+      { desc:'Initial Consultation & Mood Board', qty:1, price:380 },
+      { desc:'Shopping Day — Occasion Wear', qty:1, price:750 },
+      { desc:'Event Outfit Planning (5 events)', qty:1, price:550 },
+    ],
+    notes:'Includes up to 3 revision rounds on the outfit plan. Valid 14 days.',
+    createdAt:'2025-02-20T00:00:00Z'
+  },
+  {
+    id:'q3', clientId:'c4', title:'Creative Personal Brand Package', status:'Draft',
+    lines:[
+      { desc:'Brand Identity Consultation', qty:1, price:420 },
+      { desc:'Signature Mood Board & Direction', qty:1, price:350 },
+      { desc:'Complete Style Guide', qty:1, price:680 },
+      { desc:'Personal Shopping Half-Day', qty:1, price:450 },
+    ],
+    notes:'Draft — pending final scope confirmation.',
+    createdAt:'2025-03-01T00:00:00Z'
+  },
+  {
+    id:'q4', clientId:'c3', title:'Founder Style Refresh', status:'Draft',
+    lines:[
+      { desc:'Discovery Consultation (1.5hr)', qty:1, price:250 },
+      { desc:'Wardrobe Audit & Cull', qty:1, price:320 },
+      { desc:'Shopping Edit — Essentials', qty:1, price:480 },
+    ],
+    notes:'',
+    createdAt:'2025-03-05T00:00:00Z'
+  },
+];
+
+
+// Demo sales data
+function makeDemoSales() {
+  const months = [];
+  const now = new Date();
+  // Scatter sales across last 6 months
+  const entries = [
+    {clientId:'c1', amount:2720, description:'Full Executive Package - deposit', category:'Package', date: offsetDate(-5*30), paymentStatus:'Paid'},
+    {clientId:'c1', amount:1280, description:'Full Executive Package - balance', category:'Package', date: offsetDate(-3*30), paymentStatus:'Paid'},
+    {clientId:'c5', amount:850, description:'Personal Shopping Day', category:'Shopping Service', date: offsetDate(-4*30), paymentStatus:'Paid'},
+    {clientId:'c5', amount:1200, description:'Style Guide + Wardrobe Audit', category:'Style Guide', date: offsetDate(-4*30+5), paymentStatus:'Paid'},
+    {clientId:'c5', amount:2950, description:'Wardrobe Build Balance', category:'Wardrobe Build', date: offsetDate(-3*30-10), paymentStatus:'Paid'},
+    {clientId:'c2', amount:380, description:'Initial Consultation & Mood Board', category:'Consultation', date: offsetDate(-25), paymentStatus:'Paid'},
+    {clientId:'c4', amount:420, description:'Brand Identity Consultation', category:'Consultation', date: offsetDate(-18), paymentStatus:'Deposit Paid'},
+    {clientId:'c1', amount:440, description:'Follow-up Fitting Sessions x2', category:'Consultation', date: offsetDate(-12), paymentStatus:'Paid'},
+    {clientId:'c5', amount:450, description:'Spring Check-in Consultation', date: offsetDate(-8), category:'Consultation', paymentStatus:'Pending'},
+  ];
+  return entries.map((e,i) => ({id:'s'+i, ...e, notes:'', quoteRef:''}));
+}
+function offsetDate(days) {
+  const d = new Date(); d.setDate(d.getDate()+days);
+  return d.toISOString().split('T')[0];
+}
+
+// Demo orders data
+const DEMO_ORDERS = [
+  {id:'o1', clientId:'c1', item:'Grey Cashmere Blazer', supplier:'Sandro', category:'Clothing', status:'Delivered', cost:380, price:0, qty:1, orderDate: offsetDate(-50), dueDate: offsetDate(-40), notes:'Delivered. Client loves it.'},
+  {id:'o2', clientId:'c1', item:'Silk Blouse Collection (3 pieces)', supplier:'Vince', category:'Clothing', status:'Delivered', cost:620, price:0, qty:1, orderDate: offsetDate(-45), dueDate: offsetDate(-35), notes:'Delivered with wardrobe.'},
+  {id:'o3', clientId:'c1', item:'Tailored Trousers - Black & Camel', supplier:'Local Tailor — Park Ave', category:'Tailoring', status:'Delivered', cost:780, price:0, qty:2, orderDate: offsetDate(-40), dueDate: offsetDate(-20), notes:'Perfect fit.'},
+  {id:'o4', clientId:'c2', item:'Zimmermann Wrap Dress', supplier:'Net-a-Porter', category:'Clothing', status:'Ordered', cost:580, price:0, qty:1, orderDate: offsetDate(-3), dueDate: offsetDate(10), notes:'For October wedding events.'},
+  {id:'o5', clientId:'c2', item:'Anita Ko Hoop Earrings', supplier:'Anita Ko Direct', category:'Accessories', status:'In Production', cost:420, price:0, qty:1, orderDate: offsetDate(-7), dueDate: offsetDate(14), notes:'Custom order, 3 week lead.'},
+  {id:'o6', clientId:'c4', item:'Oversized Structured Blazer', supplier:'COS', category:'Clothing', status:'Ready', cost:195, price:0, qty:1, orderDate: offsetDate(-10), dueDate: offsetDate(-2), notes:'Click & collect ready.'},
+  {id:'o7', clientId:'c3', item:'Slim-fit Chinos x3 colors', supplier:'Uniqlo', category:'Clothing', status:'Ordered', cost:180, price:0, qty:3, orderDate: offsetDate(-1), dueDate: offsetDate(7), notes:'Navy, olive, stone.'},
+];
+
+function initData() {
+  if(!load(KEYS.clients)) save(KEYS.clients, DEMO_CLIENTS);
+  if(!load(KEYS.notes)) save(KEYS.notes, DEMO_NOTES);
+  if(!load(KEYS.events)) save(KEYS.events, DEMO_EVENTS);
+  if(!load(KEYS.deliverables)) save(KEYS.deliverables, DEMO_DELIVERABLES);
+  if(!load(KEYS.quotes)) save(KEYS.quotes, DEMO_QUOTES);
+  if(!load(KEYS.sales)) save(KEYS.sales, makeDemoSales());
+  if(!load(KEYS.orders)) save(KEYS.orders, DEMO_ORDERS);
+  if(!load(KEYS.integrations)) save(KEYS.integrations, {});
+}
+
+
+function getClients() { return load(KEYS.clients) || []; }
+function getNotes() { return load(KEYS.notes) || []; }
+function getEvents() { return load(KEYS.events) || []; }
+function getDeliverables() { return load(KEYS.deliverables) || []; }
+function getQuotes() { return load(KEYS.quotes) || []; }
+
+function clientName(id) { const c=getClients().find(x=>x.id===id); return c ? c.firstName+' '+c.lastName : 'Unknown'; }
+function getSales(){return load(KEYS.sales)||[];}
+function getOrders(){return load(KEYS.orders)||[];}
+function getIntegrations(){return load(KEYS.integrations)||{};}
+function saveIntegrations(v){save(KEYS.integrations,v);}
+
+function clientInitials(c) { return (c.firstName[0]||'')+(c.lastName[0]||''); }
+
+// ═══════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+
+const panelTitles = {
+  dashboard:'Dashboard', clients:'Clients', pipeline:'Journey Pipeline',
+  quotes:'Quotes & Pricing', deliverables:'Designs & Deliverables',
+  notes:'Notes', events:'Events & Calendar',
+  sales:'Sales Tracker', orders:'Order Tracker', settings:'Integrations & Settings'
+};
+
+function navigate(panel, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+panel).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent = panelTitles[panel];
+  closeMobileSidebar();
+  renderPanel(panel);
+}
+
+function renderPanel(panel) {
+  switch(panel) {
+    case 'dashboard': renderDashboard(); break;
+    case 'clients': renderClients(); break;
+    case 'pipeline': renderPipeline(); break;
+    case 'quotes': renderQuotes(); break;
+    case 'deliverables': renderDeliverables(); break;
+    case 'notes': renderNotes(); break;
+    case 'events': renderEvents(); break;
+    case 'sales': renderSales(); break;
+    case 'orders': renderOrders(); break;
+    case 'settings': renderSettings(); break;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+
+function renderDashboard() {
+  const clients = getClients();
+  const events = getEvents();
+  const deliverables = getDeliverables();
+  const quotes = getQuotes();
+
+  const activeClients = clients.filter(c=>c.status==='Active').length;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const in7 = new Date(today); in7.setDate(in7.getDate()+7);
+  const upcomingEvents = events.filter(e=>{ const d=new Date(e.date); return d>=today && d<=in7; });
+  const outstandingDelivs = deliverables.filter(d=>d.status!=='Complete');
+  const pendingQuotes = quotes.filter(q=>q.status==='Sent');
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Active Clients</div>
+      <div class="stat-value">${activeClients}</div>
+      <div class="stat-sub">${clients.length} total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Events This Week</div>
+      <div class="stat-value">${upcomingEvents.length}</div>
+      <div class="stat-sub">${events.length} total upcoming</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Open Deliverables</div>
+      <div class="stat-value">${outstandingDelivs.length}</div>
+      <div class="stat-sub">${deliverables.filter(d=>d.status==='Complete').length} completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Quotes Awaiting</div>
+      <div class="stat-value">${pendingQuotes.length}</div>
+      <div class="stat-sub">${fmtMoney(pendingQuotes.reduce((a,q)=>a+quoteTotal(q),0))} pending</div>
+    </div>
+  `;
+
+  // Upcoming
+  const upEl = document.getElementById('dashUpcoming');
+  const upcoming7 = events.filter(e=>{ const d=new Date(e.date); return d>=today && d<=in7; }).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!upcoming7.length) { upEl.innerHTML='<div class="empty-state"><div class="empty-state-text">No events this week</div></div>'; }
+  else upEl.innerHTML = upcoming7.map(e=>`
+    <div class="flex gap-12 mb-8" style="align-items:center;">
+      <div style="background:var(--ivory);border:1px solid var(--ivory-dark);border-radius:5px;padding:5px 9px;text-align:center;min-width:40px;">
+        <div style="font-family:Georgia,serif;font-size:15px;line-height:1;">${new Date(e.date+'T12:00:00').getDate()}</div>
+        <div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);">${new Date(e.date+'T12:00:00').toLocaleString('en',{month:'short'})}</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;">${e.title}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${e.clientId ? clientName(e.clientId) : 'General'} · ${e.time||''}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Outstanding deliverables
+  const delivEl = document.getElementById('dashDeliverables');
+  const openD = deliverables.filter(d=>d.status!=='Complete').slice(0,5);
+  if(!openD.length) { delivEl.innerHTML='<div class="empty-state"><div class="empty-state-text">All deliverables complete!</div></div>'; }
+  else delivEl.innerHTML = openD.map(d=>`
+    <div class="flex-between mb-8" style="align-items:center;gap:8px;">
+      <div>
+        <div style="font-size:13px;font-weight:500;">${d.name}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${clientName(d.clientId)}${d.due ? ' · Due '+fmtDate(d.due) : ''}</div>
+      </div>
+      <span class="badge badge-${d.status==='In Progress'?'inprogress':'pending'}">${d.status}</span>
+    </div>
+  `).join('');
+
+  // Pending quotes
+  const qEl = document.getElementById('dashQuotes');
+  if(!pendingQuotes.length) { qEl.innerHTML='<div class="empty-state"><div class="empty-state-text">No quotes awaiting response</div></div>'; }
+  else qEl.innerHTML = pendingQuotes.map(q=>`
+    <div class="flex-between mb-8">
+      <div>
+        <div style="font-size:13px;font-weight:500;">${q.title}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${clientName(q.clientId)}</div>
+      </div>
+      <div style="font-family:Georgia,serif;font-size:15px;">${fmtMoney(quoteTotal(q))}</div>
+    </div>
+  `).join('');
+
+  // Recent activity (last 5 notes)
+  const actEl = document.getElementById('dashActivity');
+  const recentNotes = [...getNotes()].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,4);
+  if(!recentNotes.length) { actEl.innerHTML='<div class="empty-state"><div class="empty-state-text">No recent activity</div></div>'; }
+  else actEl.innerHTML = recentNotes.map(n=>`
+    <div class="mb-8">
+      <div class="flex gap-8 mb-4" style="align-items:center;">
+        <span class="note-tag note-tag-${n.tag}">${n.tag}</span>
+        <span style="font-size:12px;font-weight:600;">${clientName(n.clientId)}</span>
+        <span style="font-size:11px;color:var(--text-muted);">${fmtDateTime(n.createdAt)}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);line-height:1.5;">${n.text.slice(0,90)}${n.text.length>90?'…':''}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CLIENTS LIST
+// ═══════════════════════════════════════════════════════════════
+
+let clientFilter = '';
+let clientSearch = '';
+
+function renderClients(filter) {
+  if(filter !== undefined) clientFilter = filter;
+  let clients = getClients();
+  if(clientFilter) clients = clients.filter(c=>c.status===clientFilter);
+  if(clientSearch) clients = clients.filter(c=>(c.firstName+' '+c.lastName+c.email).toLowerCase().includes(clientSearch.toLowerCase()));
+
+  const tbody = document.getElementById('clientsTableBody');
+  if(!clients.length) {
+    tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">◈</div><div class="empty-state-text">No clients found. Add your first client to get started.</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = clients.map(c=>`
+    <tr style="cursor:pointer;" onclick="openClientProfile('${c.id}')">
+      <td>
+        <div class="flex gap-12" style="align-items:center;">
+          <div class="client-avatar" style="width:34px;height:34px;font-size:13px;">${clientInitials(c)}</div>
+          <div>
+            <div style="font-weight:600;">${c.firstName} ${c.lastName}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${c.email}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge badge-${c.status.toLowerCase()}">${c.status}</span></td>
+      <td><span style="font-size:12px;color:var(--text-secondary);">${c.stage}</span></td>
+      <td style="color:var(--text-secondary);">${fmtDate(c.startDate)}</td>
+      <td style="max-width:220px;color:var(--text-secondary);font-size:12px;">${(c.summary||'').slice(0,70)}${(c.summary||'').length>70?'…':''}</td>
+      <td>
+        <div class="flex gap-4" onclick="event.stopPropagation()">
+          <button class="btn btn-ghost btn-xs" onclick="openEditClientModal('${c.id}')">✏</button>
+          <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('client','${c.id}')">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterClients(val) { clientFilter=val; renderClients(); }
+function globalSearchClients(val) { clientSearch=val; if(document.getElementById('panel-clients').classList.contains('active')) renderClients(); }
+
+// ═══════════════════════════════════════════════════════════════
+//  PIPELINE
+// ═══════════════════════════════════════════════════════════════
+
+const STAGES = ['Inquiry','Consultation','Proposal','Active','Delivered','Follow-up'];
+const STAGE_KEYS = ['inquiry','consultation','proposal','active','delivered','followup'];
+
+function renderPipeline() {
+  const clients = getClients();
+  const el = document.getElementById('pipelineStages');
+  el.innerHTML = STAGES.map((stage,i)=>{
+    const stageClients = clients.filter(c=>c.stage===stage);
+    return `
+      <div class="stage-col stage-${STAGE_KEYS[i]}">
+        <div class="stage-header">
+          <span>${stage}</span>
+          <span style="background:rgba(255,255,255,0.25);padding:1px 7px;border-radius:12px;font-size:11px;">${stageClients.length}</span>
+        </div>
+        <div class="stage-body">
+          ${stageClients.length ? stageClients.map(c=>`
+            <div class="stage-client-card" onclick="openClientProfile('${c.id}')">
+              <div class="stage-client-name">${c.firstName} ${c.lastName}</div>
+              <div class="stage-client-sub">${c.budget||''}</div>
+            </div>
+          `).join('') : '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:14px 0;">Empty</div>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CLIENT PROFILE MODAL
+// ═══════════════════════════════════════════════════════════════
+
+function openClientProfile(clientId) {
+  const c = getClients().find(x=>x.id===clientId);
+  if(!c) return;
+  document.getElementById('profileModalTitle').textContent = c.firstName+' '+c.lastName;
+  document.getElementById('profileModalBody').innerHTML = buildProfileHTML(c);
+  openModal('modal-profile');
+  showProfileTab('overview', clientId);
+}
+
+function buildProfileHTML(c) {
+  return `
+    <div class="client-profile-header">
+      <div class="client-avatar">${clientInitials(c)}</div>
+      <div style="flex:1;">
+        <div style="font-family:Georgia,serif;font-size:20px;">${c.firstName} ${c.lastName}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:3px;">${c.email} · ${c.phone}</div>
+        <div class="flex gap-8 mt-8">
+          <span class="badge badge-${c.status.toLowerCase()}">${c.status}</span>
+          <span style="font-size:12px;color:var(--text-secondary);background:var(--ivory);padding:2px 8px;border-radius:20px;border:1px solid var(--ivory-dark);">${c.stage}</span>
+          ${c.budget ? `<span style="font-size:12px;color:var(--gold);background:rgba(184,150,90,0.1);padding:2px 8px;border-radius:20px;">${c.budget}</span>` : ''}
+        </div>
+      </div>
+      <div class="flex gap-8">
+        <button class="btn btn-outline btn-sm" onclick="openEditClientModal('${c.id}')">Edit</button>
+      </div>
+    </div>
+    ${c.summary ? `<div style="background:var(--ivory);border:1px solid var(--ivory-dark);border-radius:6px;padding:12px 14px;font-size:13px;color:var(--text-secondary);line-height:1.55;margin-bottom:16px;">${c.summary}</div>` : ''}
+    <div class="profile-tabs">
+      <button class="profile-tab active" onclick="showProfileTab('overview','${c.id}')">Overview</button>
+      <button class="profile-tab" onclick="showProfileTab('notes','${c.id}')">Notes</button>
+      <button class="profile-tab" onclick="showProfileTab('deliverables','${c.id}')">Deliverables</button>
+      <button class="profile-tab" onclick="showProfileTab('quotes','${c.id}')">Quotes</button>
+      <button class="profile-tab" onclick="showProfileTab('events','${c.id}')">Events</button>
+    </div>
+    <div id="profileContent"></div>
+  `;
+}
+
+function showProfileTab(tab, clientId) {
+  document.querySelectorAll('.profile-tab').forEach(t=>t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.profile-tab');
+  const tabNames = ['overview','notes','deliverables','quotes','events'];
+  const i = tabNames.indexOf(tab);
+  if(tabs[i]) tabs[i].classList.add('active');
+  const el = document.getElementById('profileContent');
+  if(!el) return;
+  switch(tab) {
+    case 'overview': renderProfileOverview(clientId, el); break;
+    case 'notes': renderProfileNotes(clientId, el); break;
+    case 'deliverables': renderProfileDeliverables(clientId, el); break;
+    case 'quotes': renderProfileQuotes(clientId, el); break;
+    case 'events': renderProfileEvents(clientId, el); break;
+  }
+}
+
+function renderProfileOverview(clientId, el) {
+  const notes = getNotes().filter(n=>n.clientId===clientId);
+  const delivs = getDeliverables().filter(d=>d.clientId===clientId);
+  const events = getEvents().filter(e=>e.clientId===clientId);
+  const quotes = getQuotes().filter(q=>q.clientId===clientId);
+  const done = delivs.filter(d=>d.status==='Complete').length;
+  const pct = delivs.length ? Math.round(done/delivs.length*100) : 0;
+
+  el.innerHTML = `
+    <div class="grid-3 mb-16">
+      <div class="card" style="text-align:center;padding:14px;">
+        <div style="font-family:Georgia,serif;font-size:26px;">${notes.length}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);">Notes</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;">
+        <div style="font-family:Georgia,serif;font-size:26px;">${events.length}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);">Events</div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;">
+        <div style="font-family:Georgia,serif;font-size:26px;">${quotes.length}</div>
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);">Quotes</div>
+      </div>
+    </div>
+    ${delivs.length ? `
+    <div class="card mb-16">
+      <div class="flex-between mb-8">
+        <div class="card-title mb-0">Project Progress</div>
+        <span style="font-size:13px;color:var(--gold);">${pct}%</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">${done} of ${delivs.length} deliverables complete</div>
+    </div>` : ''}
+    <div class="card">
+      <div class="card-title">Stage Journey</div>
+      <div class="flex gap-8" style="flex-wrap:wrap;">
+        ${STAGES.map(s=>`
+          <div style="text-align:center;padding:8px 14px;border-radius:6px;${getClients().find(x=>x.id===clientId)?.stage===s ? 'background:var(--gold);color:var(--white);' : 'background:var(--ivory);color:var(--text-muted);border:1px solid var(--ivory-dark);'}">
+            <div style="font-size:11px;font-weight:600;">${s}</div>
+          </div>
+        `).join('<div style="color:var(--ivory-dark);line-height:34px;font-size:18px;">›</div>')}
+      </div>
+    </div>
+  `;
+}
+
+function renderProfileNotes(clientId, el) {
+  const notes = getNotes().filter(n=>n.clientId===clientId).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  el.innerHTML = `
+    <div class="flex-between mb-12">
+      <span style="font-size:13px;color:var(--text-muted);">${notes.length} note${notes.length!==1?'s':''}</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddNoteModalForClient('${clientId}')">+ Add Note</button>
+    </div>
+    ${notes.length ? notes.map(n=>noteHTML(n)).join('') : '<div class="empty-state"><div class="empty-state-text">No notes yet.</div></div>'}
+  `;
+}
+
+function renderProfileDeliverables(clientId, el) {
+  const delivs = getDeliverables().filter(d=>d.clientId===clientId);
+  el.innerHTML = `
+    <div class="flex-between mb-12">
+      <span style="font-size:13px;color:var(--text-muted);">${delivs.length} item${delivs.length!==1?'s':''}</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddDeliverableModalForClient('${clientId}')">+ Add Item</button>
+    </div>
+    ${delivs.length ? delivs.map(d=>deliverableHTML(d,true)).join('') : '<div class="empty-state"><div class="empty-state-text">No deliverables yet.</div></div>'}
+  `;
+}
+
+function renderProfileQuotes(clientId, el) {
+  const quotes = getQuotes().filter(q=>q.clientId===clientId);
+  el.innerHTML = `
+    <div class="flex-between mb-12">
+      <span style="font-size:13px;color:var(--text-muted);">${quotes.length} quote${quotes.length!==1?'s':''}</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddQuoteModalForClient('${clientId}')">+ New Quote</button>
+    </div>
+    ${quotes.length ? quotes.map(q=>quoteCardHTML(q)).join('') : '<div class="empty-state"><div class="empty-state-text">No quotes yet.</div></div>'}
+  `;
+}
+
+function renderProfileEvents(clientId, el) {
+  const events = getEvents().filter(e=>e.clientId===clientId).sort((a,b)=>a.date.localeCompare(b.date));
+  el.innerHTML = `
+    <div class="flex-between mb-12">
+      <span style="font-size:13px;color:var(--text-muted);">${events.length} event${events.length!==1?'s':''}</span>
+      <button class="btn btn-primary btn-sm" onclick="openAddEventModalForClient('${clientId}')">+ Add Event</button>
+    </div>
+    ${events.length ? events.map(e=>eventHTML(e,false)).join('') : '<div class="empty-state"><div class="empty-state-text">No events yet.</div></div>'}
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  NOTES
+// ═══════════════════════════════════════════════════════════════
+
+let noteClientFilterId = '';
+
+function renderNotes(filter) {
+  if(filter !== undefined) noteClientFilterId = filter;
+  populateClientSelects();
+  let notes = getNotes().sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  if(noteClientFilterId) notes = notes.filter(n=>n.clientId===noteClientFilterId);
+  const el = document.getElementById('notesWrap');
+  el.innerHTML = notes.length ? notes.map(n=>noteHTML(n, true)).join('') : '<div class="empty-state"><div class="empty-state-icon">◌</div><div class="empty-state-text">No notes yet. Add your first note to get started.</div></div>';
+}
+
+function filterNotes(val) { noteClientFilterId=val; renderNotes(); }
+
+function noteHTML(n, showClient=false) {
+  return `
+    <div class="note-item" id="noteItem-${n.id}">
+      <div class="note-meta">
+        <span class="note-tag note-tag-${n.tag}">${n.tag}</span>
+        ${showClient ? `<span style="font-size:12px;font-weight:600;">${clientName(n.clientId)}</span>` : ''}
+        <span class="note-timestamp">${fmtDateTime(n.createdAt)}</span>
+      </div>
+      <div class="note-text" id="noteText-${n.id}">${escHtml(n.text)}</div>
+      <div class="note-actions">
+        <button class="btn btn-ghost btn-xs" onclick="openEditNoteModal('${n.id}')">✏ Edit</button>
+        <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('note','${n.id}')">✕ Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  EVENTS
+// ═══════════════════════════════════════════════════════════════
+
+let eventClientFilterId = '';
+
+function renderEvents(filter) {
+  if(filter !== undefined) eventClientFilterId = filter;
+  populateClientSelects();
+  let events = getEvents().sort((a,b)=>a.date.localeCompare(b.date));
+  if(eventClientFilterId) events = events.filter(e=>e.clientId===eventClientFilterId);
+  const el = document.getElementById('eventsWrap');
+  el.innerHTML = events.length ? events.map(e=>eventHTML(e, true)).join('') : '<div class="empty-state"><div class="empty-state-icon">◷</div><div class="empty-state-text">No events yet. Add your first event.</div></div>';
+}
+
+function filterEvents(val) { eventClientFilterId=val; renderEvents(); }
+
+function eventHTML(e, showClient=true) {
+  const d = new Date(e.date+'T12:00:00');
+  const day = d.getDate();
+  const month = d.toLocaleString('en',{month:'short'}).toUpperCase();
+  const isPast = new Date(e.date) < new Date(new Date().toDateString());
+  return `
+    <div class="event-item" style="${isPast ? 'opacity:0.6;' : ''}">
+      <div class="event-date-badge">
+        <div class="event-day">${day}</div>
+        <div class="event-month">${month}</div>
+      </div>
+      <div class="event-info">
+        <div class="event-title">${escHtml(e.title)}</div>
+        <div class="event-meta">
+          ${showClient && e.clientId ? clientName(e.clientId)+' · ' : ''}
+          ${e.type} ${e.time ? '· '+e.time : ''} ${e.location ? '· '+e.location : ''}
+        </div>
+        ${e.notes ? `<div class="event-notes">${escHtml(e.notes)}</div>` : ''}
+      </div>
+      <div class="flex gap-4" style="flex-shrink:0;">
+        <button class="btn btn-ghost btn-xs" onclick="openEditEventModal('${e.id}')">✏</button>
+        <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('event','${e.id}')">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DELIVERABLES
+// ═══════════════════════════════════════════════════════════════
+
+let delivClientFilterId = '';
+
+function renderDeliverables(filter) {
+  if(filter !== undefined) delivClientFilterId = filter;
+  populateClientSelects();
+  let delivs = getDeliverables();
+  if(delivClientFilterId) delivs = delivs.filter(d=>d.clientId===delivClientFilterId);
+  const el = document.getElementById('deliverablesWrap');
+  if(!delivs.length) { el.innerHTML='<div class="empty-state"><div class="empty-state-icon">◻</div><div class="empty-state-text">No deliverables yet.</div></div>'; return; }
+  // Group by client
+  const clients = getClients();
+  const grouped = {};
+  delivs.forEach(d=>{ if(!grouped[d.clientId]) grouped[d.clientId]=[]; grouped[d.clientId].push(d); });
+  el.innerHTML = Object.entries(grouped).map(([cid, items])=>{
+    const cl = clients.find(x=>x.id===cid);
+    return `
+      <div class="card mb-16">
+        <div class="flex-between mb-12">
+          <div class="card-title mb-0" style="cursor:pointer;" onclick="openClientProfile('${cid}')">${cl ? cl.firstName+' '+cl.lastName : 'Unknown'}</div>
+          <button class="btn btn-outline btn-sm" onclick="openAddDeliverableModalForClient('${cid}')">+ Add</button>
+        </div>
+        ${items.map(d=>deliverableHTML(d,false)).join('')}
+      </div>
+    `;
+  }).join('');
+}
+
+function filterDeliverables(val) { delivClientFilterId=val; renderDeliverables(); }
+
+function deliverableHTML(d, compact=false) {
+  const checked = d.status==='Complete';
+  return `
+    <div class="deliverable-item ${checked?'complete':''}" id="delivItem-${d.id}">
+      <div class="deliverable-check ${checked?'checked':''}" onclick="toggleDeliverable('${d.id}')">${checked?'✓':''}</div>
+      <div style="flex:1;">
+        <div class="deliverable-name ${checked?'done':''}">${escHtml(d.name)}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${d.category}${d.due ? ' · Due '+fmtDate(d.due) : ''}</div>
+        ${d.notes ? `<div style="font-size:11px;color:var(--text-secondary);margin-top:3px;font-style:italic;">${escHtml(d.notes)}</div>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <select class="form-select" style="width:115px;font-size:11px;padding:4px 6px;" onchange="updateDelivStatus('${d.id}',this.value)">
+          <option ${d.status==='Pending'?'selected':''}>Pending</option>
+          <option ${d.status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${d.status==='Complete'?'selected':''}>Complete</option>
+        </select>
+        <button class="btn btn-ghost btn-xs" onclick="openEditDeliverableModal('${d.id}')">✏</button>
+        <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('deliverable','${d.id}')">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleDeliverable(id) {
+  const delivs = getDeliverables();
+  const d = delivs.find(x=>x.id===id);
+  if(!d) return;
+  d.status = d.status==='Complete' ? 'Pending' : 'Complete';
+  save(KEYS.deliverables, delivs);
+  renderDeliverables();
+}
+
+function updateDelivStatus(id, status) {
+  const delivs = getDeliverables();
+  const d = delivs.find(x=>x.id===id);
+  if(!d) return;
+  d.status = status;
+  save(KEYS.deliverables, delivs);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  QUOTES
+// ═══════════════════════════════════════════════════════════════
+
+function renderQuotes() {
+  populateClientSelects();
+  const quotes = getQuotes().sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+  const el = document.getElementById('quotesListWrap');
+  el.innerHTML = quotes.length ? quotes.map(q=>quoteCardHTML(q, true)).join('') : '<div class="empty-state"><div class="empty-state-icon">◎</div><div class="empty-state-text">No quotes yet.</div></div>';
+}
+
+function quoteCardHTML(q, showClient=false) {
+  const total = quoteTotal(q);
+  return `
+    <div class="quote-card">
+      <div class="quote-card-header">
+        <div>
+          <div style="font-size:14px;font-weight:600;">${escHtml(q.title)}</div>
+          ${showClient ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${clientName(q.clientId)} · Created ${fmtDate(q.createdAt)}</div>` : ''}
+        </div>
+        <div class="flex gap-8" style="align-items:center;">
+          <span class="badge badge-${q.status.toLowerCase()}">${q.status}</span>
+          <span style="font-family:Georgia,serif;font-size:18px;">${fmtMoney(total)}</span>
+          <button class="btn btn-ghost btn-xs" onclick="openEditQuoteModal('${q.id}')">✏</button>
+          <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('quote','${q.id}')">✕</button>
+        </div>
+      </div>
+      <div class="quote-card-body">
+        <table class="data-table" style="font-size:12px;">
+          <thead><tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+          <tbody>
+            ${q.lines.map(l=>`<tr><td>${escHtml(l.desc)}</td><td>${l.qty}</td><td>${fmtMoney(l.price)}</td><td>${fmtMoney(l.qty*l.price)}</td></tr>`).join('')}
+          </tbody>
+        </table>
+        ${q.notes ? `<div style="font-size:11px;color:var(--text-muted);margin-top:8px;font-style:italic;">${escHtml(q.notes)}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function quoteTotal(q) { return (q.lines||[]).reduce((a,l)=>a+l.qty*l.price,0); }
+
+// Quote line management
+let quoteLines = [];
+
+function addQuoteLine(desc='', qty=1, price=0) {
+  const id = uid();
+  quoteLines.push({id, desc, qty, price});
+  renderQuoteLines();
+}
+
+function removeQuoteLine(id) {
+  quoteLines = quoteLines.filter(l=>l.id!==id);
+  renderQuoteLines();
+}
+
+function renderQuoteLines() {
+  const el = document.getElementById('quoteLinesContainer');
+  el.innerHTML = quoteLines.map(l=>`
+    <div class="quote-line" id="ql-${l.id}">
+      <input class="form-input" style="font-size:12px;" value="${escHtml(l.desc)}" placeholder="Service description" oninput="updateLine('${l.id}','desc',this.value)">
+      <input class="form-input" style="font-size:12px;" type="number" min="1" value="${l.qty}" oninput="updateLine('${l.id}','qty',this.value)">
+      <input class="form-input" style="font-size:12px;" type="number" min="0" step="0.01" value="${l.price}" oninput="updateLine('${l.id}','price',this.value)">
+      <div style="font-size:13px;font-weight:600;line-height:36px;text-align:right;padding-right:4px;">${fmtMoney(l.qty*l.price)}</div>
+      <button class="btn btn-ghost btn-xs" style="color:var(--danger);font-size:16px;" onclick="removeQuoteLine('${l.id}')">×</button>
+    </div>
+  `).join('');
+  updateQuoteTotal();
+}
+
+function updateLine(id, field, val) {
+  const l = quoteLines.find(x=>x.id===id);
+  if(!l) return;
+  if(field==='desc') l.desc = val;
+  else if(field==='qty') l.qty = parseFloat(val)||0;
+  else if(field==='price') l.price = parseFloat(val)||0;
+  updateQuoteTotal();
+  const row = document.getElementById('ql-'+id);
+  if(row) {
+    const tots = row.querySelectorAll('div');
+    tots.forEach(t=>{ if(t.style.textAlign==='right') t.textContent=fmtMoney(l.qty*l.price); });
+  }
+}
+
+function updateQuoteTotal() {
+  const total = quoteLines.reduce((a,l)=>a+l.qty*l.price,0);
+  const el = document.getElementById('quoteTotalDisplay');
+  if(el) el.textContent = fmtMoney(total);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL HELPERS — ADD/EDIT
+// ═══════════════════════════════════════════════════════════════
+
+function populateClientSelects() {
+  const clients = getClients();
+  const opts = clients.map(c=>`<option value="${c.id}">${c.firstName} ${c.lastName}</option>`).join('');
+  const blankOpt = '<option value="">— Select Client —</option>';
+
+  ['noteClientId','delivClientId','quoteClientId','saleClientId','orderClientId'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.innerHTML = blankOpt+opts;
+  });
+  ['eventClientId'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.innerHTML = '<option value="">— General —</option>'+opts;
+  });
+  // populate order/sale filter dropdowns
+  ['orderClientFilter','noteClientFilter','delivClientFilter','eventClientFilter'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.innerHTML = '<option value="">All Clients</option>'+opts;
+  });
+
+  // filter dropdowns handled above
+}
+
+// CLIENT
+function openAddClientModal() {
+  document.getElementById('clientModalTitle').textContent = 'New Client';
+  document.getElementById('editClientId').value = '';
+  ['clientFirstName','clientLastName','clientEmail','clientPhone','clientBudget','clientSummary'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('clientStatus').value = 'Prospect';
+  document.getElementById('clientStage').value = 'Inquiry';
+  document.getElementById('clientStartDate').value = new Date().toISOString().split('T')[0];
+  openModal('modal-client');
+}
+
+function openEditClientModal(id) {
+  const c = getClients().find(x=>x.id===id); if(!c) return;
+  document.getElementById('clientModalTitle').textContent = 'Edit Client';
+  document.getElementById('editClientId').value = id;
+  document.getElementById('clientFirstName').value = c.firstName||'';
+  document.getElementById('clientLastName').value = c.lastName||'';
+  document.getElementById('clientEmail').value = c.email||'';
+  document.getElementById('clientPhone').value = c.phone||'';
+  document.getElementById('clientStatus').value = c.status||'Prospect';
+  document.getElementById('clientStage').value = c.stage||'Inquiry';
+  document.getElementById('clientStartDate').value = c.startDate||'';
+  document.getElementById('clientBudget').value = c.budget||'';
+  document.getElementById('clientSummary').value = c.summary||'';
+  openModal('modal-client');
+}
+
+function saveClient() {
+  const fn = document.getElementById('clientFirstName').value.trim();
+  const ln = document.getElementById('clientLastName').value.trim();
+  if(!fn||!ln) { alert('Please enter a first and last name.'); return; }
+  const clients = getClients();
+  const editId = document.getElementById('editClientId').value;
+  const data = {
+    firstName:fn, lastName:ln,
+    email: document.getElementById('clientEmail').value.trim(),
+    phone: document.getElementById('clientPhone').value.trim(),
+    status: document.getElementById('clientStatus').value,
+    stage: document.getElementById('clientStage').value,
+    startDate: document.getElementById('clientStartDate').value,
+    budget: document.getElementById('clientBudget').value.trim(),
+    summary: document.getElementById('clientSummary').value.trim(),
+  };
+  if(editId) {
+    const i = clients.findIndex(x=>x.id===editId);
+    if(i>=0) clients[i] = {...clients[i], ...data};
+  } else {
+    clients.push({id:uid(), source:'manual', ...data});
+  }
+  save(KEYS.clients, clients);
+  closeModal('modal-client');
+  renderPanel(document.querySelector('.nav-item.active')?.dataset.panel||'clients');
+  populateClientSelects();
+}
+
+// NOTE
+function openAddNoteModal() {
+  populateClientSelects();
+  document.getElementById('noteModalTitle').textContent = 'Add Note';
+  document.getElementById('editNoteId').value = '';
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteTag').value = 'general';
+  openModal('modal-note');
+}
+
+function openAddNoteModalForClient(clientId) {
+  openAddNoteModal();
+  const sel = document.getElementById('noteClientId');
+  if(sel) sel.value = clientId;
+}
+
+function openEditNoteModal(id) {
+  const n = getNotes().find(x=>x.id===id); if(!n) return;
+  populateClientSelects();
+  document.getElementById('noteModalTitle').textContent = 'Edit Note';
+  document.getElementById('editNoteId').value = id;
+  document.getElementById('noteClientId').value = n.clientId;
+  document.getElementById('noteTag').value = n.tag;
+  document.getElementById('noteText').value = n.text;
+  openModal('modal-note');
+}
+
+function saveNote() {
+  const cid = document.getElementById('noteClientId').value;
+  const text = document.getElementById('noteText').value.trim();
+  if(!cid||!text) { alert('Please select a client and enter a note.'); return; }
+  const notes = getNotes();
+  const editId = document.getElementById('editNoteId').value;
+  if(editId) {
+    const i = notes.findIndex(x=>x.id===editId);
+    if(i>=0) { notes[i].clientId=cid; notes[i].tag=document.getElementById('noteTag').value; notes[i].text=text; }
+  } else {
+    notes.push({ id:uid(), clientId:cid, tag:document.getElementById('noteTag').value, text, createdAt:new Date().toISOString() });
+  }
+  save(KEYS.notes, notes);
+  closeModal('modal-note');
+  if(document.getElementById('panel-notes').classList.contains('active')) renderNotes();
+  if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+  // Refresh profile if open
+  const pc = document.getElementById('profileContent');
+  if(pc) { const tabs = document.querySelectorAll('.profile-tab'); tabs.forEach((t,i)=>{ if(t.classList.contains('active') && i===1) showProfileTab('notes',cid); }); }
+}
+
+// EVENT
+function openAddEventModal() {
+  populateClientSelects();
+  document.getElementById('eventModalTitle').textContent = 'Add Event';
+  document.getElementById('editEventId').value = '';
+  ['eventTitle','eventLocation','eventNotes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('eventTime').value = '';
+  document.getElementById('eventClientId').value = '';
+  openModal('modal-event');
+}
+
+function openAddEventModalForClient(clientId) {
+  openAddEventModal();
+  const sel = document.getElementById('eventClientId');
+  if(sel) sel.value = clientId;
+}
+
+function openEditEventModal(id) {
+  const e = getEvents().find(x=>x.id===id); if(!e) return;
+  populateClientSelects();
+  document.getElementById('eventModalTitle').textContent = 'Edit Event';
+  document.getElementById('editEventId').value = id;
+  document.getElementById('eventTitle').value = e.title||'';
+  document.getElementById('eventClientId').value = e.clientId||'';
+  document.getElementById('eventType').value = e.type||'Consultation';
+  document.getElementById('eventDate').value = e.date||'';
+  document.getElementById('eventTime').value = e.time||'';
+  document.getElementById('eventLocation').value = e.location||'';
+  document.getElementById('eventNotes').value = e.notes||'';
+  openModal('modal-event');
+}
+
+function saveEvent() {
+  const title = document.getElementById('eventTitle').value.trim();
+  const date = document.getElementById('eventDate').value;
+  if(!title||!date) { alert('Please enter a title and date.'); return; }
+  const events = getEvents();
+  const editId = document.getElementById('editEventId').value;
+  const data = {
+    title, date,
+    clientId: document.getElementById('eventClientId').value,
+    type: document.getElementById('eventType').value,
+    time: document.getElementById('eventTime').value,
+    location: document.getElementById('eventLocation').value.trim(),
+    notes: document.getElementById('eventNotes').value.trim(),
+  };
+  if(editId) {
+    const i = events.findIndex(x=>x.id===editId);
+    if(i>=0) events[i] = {...events[i], ...data};
+  } else {
+    events.push({id:uid(), ...data});
+  }
+  save(KEYS.events, events);
+  closeModal('modal-event');
+  if(document.getElementById('panel-events').classList.contains('active')) renderEvents();
+  if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+}
+
+// DELIVERABLE
+function openAddDeliverableModal() {
+  populateClientSelects();
+  document.getElementById('delivModalTitle').textContent = 'Add Deliverable';
+  document.getElementById('editDelivId').value = '';
+  document.getElementById('delivName').value = '';
+  document.getElementById('delivNotes').value = '';
+  document.getElementById('delivDue').value = '';
+  document.getElementById('delivStatus').value = 'Pending';
+  document.getElementById('delivCategory').value = 'Design';
+  openModal('modal-deliverable');
+}
+
+function openAddDeliverableModalForClient(clientId) {
+  openAddDeliverableModal();
+  document.getElementById('delivClientId').value = clientId;
+}
+
+function openEditDeliverableModal(id) {
+  const d = getDeliverables().find(x=>x.id===id); if(!d) return;
+  populateClientSelects();
+  document.getElementById('delivModalTitle').textContent = 'Edit Deliverable';
+  document.getElementById('editDelivId').value = id;
+  document.getElementById('delivClientId').value = d.clientId;
+  document.getElementById('delivName').value = d.name||'';
+  document.getElementById('delivStatus').value = d.status||'Pending';
+  document.getElementById('delivCategory').value = d.category||'Design';
+  document.getElementById('delivDue').value = d.due||'';
+  document.getElementById('delivNotes').value = d.notes||'';
+  openModal('modal-deliverable');
+}
+
+function saveDeliverable() {
+  const cid = document.getElementById('delivClientId').value;
+  const name = document.getElementById('delivName').value.trim();
+  if(!cid||!name) { alert('Please select a client and enter a name.'); return; }
+  const delivs = getDeliverables();
+  const editId = document.getElementById('editDelivId').value;
+  const data = {
+    clientId:cid, name,
+    status: document.getElementById('delivStatus').value,
+    category: document.getElementById('delivCategory').value,
+    due: document.getElementById('delivDue').value,
+    notes: document.getElementById('delivNotes').value.trim(),
+  };
+  if(editId) {
+    const i = delivs.findIndex(x=>x.id===editId);
+    if(i>=0) delivs[i] = {...delivs[i], ...data};
+  } else {
+    delivs.push({id:uid(), ...data});
+  }
+  save(KEYS.deliverables, delivs);
+  closeModal('modal-deliverable');
+  if(document.getElementById('panel-deliverables').classList.contains('active')) renderDeliverables();
+  if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+}
+
+// QUOTE
+function openAddQuoteModal() {
+  populateClientSelects();
+  document.getElementById('quoteModalTitle').textContent = 'New Quote';
+  document.getElementById('editQuoteId').value = '';
+  document.getElementById('quoteTitle').value = '';
+  document.getElementById('quoteStatus').value = 'Draft';
+  document.getElementById('quoteNotes').value = '';
+  document.getElementById('quoteClientId').value = '';
+  quoteLines = [];
+  addQuoteLine('', 1, 0);
+  openModal('modal-quote');
+}
+
+function openAddQuoteModalForClient(clientId) {
+  openAddQuoteModal();
+  document.getElementById('quoteClientId').value = clientId;
+}
+
+function openEditQuoteModal(id) {
+  const q = getQuotes().find(x=>x.id===id); if(!q) return;
+  populateClientSelects();
+  document.getElementById('quoteModalTitle').textContent = 'Edit Quote';
+  document.getElementById('editQuoteId').value = id;
+  document.getElementById('quoteTitle').value = q.title||'';
+  document.getElementById('quoteStatus').value = q.status||'Draft';
+  document.getElementById('quoteNotes').value = q.notes||'';
+  document.getElementById('quoteClientId').value = q.clientId||'';
+  quoteLines = (q.lines||[]).map(l=>({id:uid(), ...l}));
+  renderQuoteLines();
+  openModal('modal-quote');
+}
+
+function saveQuote() {
+  const cid = document.getElementById('quoteClientId').value;
+  const title = document.getElementById('quoteTitle').value.trim();
+  if(!cid) { alert('Please select a client.'); return; }
+  const quotes = getQuotes();
+  const editId = document.getElementById('editQuoteId').value;
+  const data = {
+    clientId:cid,
+    title: title||'Untitled Quote',
+    status: document.getElementById('quoteStatus').value,
+    notes: document.getElementById('quoteNotes').value.trim(),
+    lines: quoteLines.map(({desc,qty,price})=>({desc,qty,price})),
+  };
+  if(editId) {
+    const i = quotes.findIndex(x=>x.id===editId);
+    if(i>=0) quotes[i] = {...quotes[i], ...data};
+  } else {
+    quotes.push({id:uid(), createdAt:new Date().toISOString(), ...data});
+  }
+  save(KEYS.quotes, quotes);
+  closeModal('modal-quote');
+  if(document.getElementById('panel-quotes').classList.contains('active')) renderQuotes();
+  if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DELETE
+// ═══════════════════════════════════════════════════════════════
+
+function confirmDelete(type, id) {
+  const msgs = {
+    client:'Delete this client? This cannot be undone.',
+    note:'Delete this note? This cannot be undone.',
+    event:'Delete this event? This cannot be undone.',
+    deliverable:'Delete this deliverable? This cannot be undone.',
+    quote:'Delete this quote? This cannot be undone.',
+    sale:'Delete this sale entry? This cannot be undone.',
+    order:'Delete this order? This cannot be undone.'
+  };
+  document.getElementById('confirmDeleteMsg').textContent = msgs[type]||'Are you sure?';
+  const btn = document.getElementById('confirmDeleteBtn');
+  btn.onclick = () => { doDelete(type,id); closeModal('modal-confirm'); };
+  openModal('modal-confirm');
+}
+
+function doDelete(type, id) {
+  const keyMap = { client:KEYS.clients, note:KEYS.notes, event:KEYS.events, deliverable:KEYS.deliverables, quote:KEYS.quotes, sale:KEYS.sales, order:KEYS.orders };
+  const key = keyMap[type]; if(!key) return;
+  const items = load(key)||[];
+  save(key, items.filter(x=>x.id!==id));
+  const panel = document.querySelector('.panel.active')?.id?.replace('panel-','');
+  if(panel) renderPanel(panel);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  MODAL OPEN/CLOSE
+// ═══════════════════════════════════════════════════════════════
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  MOBILE SIDEBAR
+// ═══════════════════════════════════════════════════════════════
+
+function toggleMobileSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function closeMobileSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════════════════════
+
+function fmtMoney(n) { return '$'+(parseFloat(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtDate(str) { if(!str) return '—'; try { const d=new Date(str+'T12:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); } catch(e){ return str; } }
+function fmtDateTime(str) { if(!str) return '—'; try { const d=new Date(str); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); } catch(e){ return str; } }
+function escHtml(str) { if(!str) return ''; return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
+
+
+// ═══════════════════════════════════════════════════════════════
+//  SALES TRACKER
+// ═══════════════════════════════════════════════════════════════
+
+let currentSalesPeriod = 'month';
+
+function setSalesPeriod(period, btn) {
+  currentSalesPeriod = period;
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderSales();
+}
+
+function getSalesByPeriod(period) {
+  const sales = getSales();
+  const now = new Date(); now.setHours(23,59,59,999);
+  const start = new Date();
+  if(period==='day') { start.setHours(0,0,0,0); }
+  else if(period==='week') { start.setDate(start.getDate()-start.getDay()); start.setHours(0,0,0,0); }
+  else if(period==='month') { start.setDate(1); start.setHours(0,0,0,0); }
+  else if(period==='quarter') { const q=Math.floor(start.getMonth()/3); start.setMonth(q*3,1); start.setHours(0,0,0,0); }
+  else if(period==='year') { start.setMonth(0,1); start.setHours(0,0,0,0); }
+  else return sales; // all
+  return sales.filter(s => { const d=new Date(s.date+'T12:00:00'); return d>=start && d<=now; });
+}
+
+function renderSales() {
+  populateClientSelects();
+  const allSales = getSales();
+  const periodSales = getSalesByPeriod(currentSalesPeriod);
+  const periodTotal = periodSales.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const paidSales = periodSales.filter(s=>s.paymentStatus==='Paid');
+  const paidTotal = paidSales.reduce((a,s)=>a+parseFloat(s.amount||0),0);
+  const pendingTotal = periodSales.filter(s=>s.paymentStatus!=='Paid').reduce((a,s)=>a+parseFloat(s.amount||0),0);
+
+  // KPIs
+  const labels = {day:'Today',week:'This Week',month:'This Month',quarter:'This Quarter',year:'This Year',all:'All Time'};
+  document.getElementById('salesKpis').innerHTML = `
+    <div class="kpi-box"><div class="kpi-label">${labels[currentSalesPeriod]} Revenue</div><div class="kpi-value">${fmtMoney(periodTotal)}</div><div class="kpi-sub">${periodSales.length} sale${periodSales.length!==1?'s':''}</div></div>
+    <div class="kpi-box"><div class="kpi-label">Collected</div><div class="kpi-value kpi-up">${fmtMoney(paidTotal)}</div><div class="kpi-sub">${paidSales.length} paid</div></div>
+    <div class="kpi-box"><div class="kpi-label">Outstanding</div><div class="kpi-value ${pendingTotal>0?'kpi-down':''}">${fmtMoney(pendingTotal)}</div><div class="kpi-sub">${periodSales.filter(s=>s.paymentStatus!=='Paid').length} pending</div></div>
+  `;
+  document.getElementById('salesPeriodLabel').textContent = `Showing: ${labels[currentSalesPeriod]}`;
+
+  // Bar chart — last 8 months
+  const barEl = document.getElementById('salesBarChart');
+  const monthTotals = {};
+  allSales.forEach(s => {
+    const d = new Date(s.date+'T12:00:00');
+    const key = d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
+    const label = d.toLocaleString('en',{month:'short'});
+    if(!monthTotals[key]) monthTotals[key]={label,total:0};
+    monthTotals[key].total += parseFloat(s.amount||0);
+  });
+  const sortedKeys = Object.keys(monthTotals).sort().slice(-8);
+  const maxVal = Math.max(...sortedKeys.map(k=>monthTotals[k].total), 1);
+  const barCols = sortedKeys.map(k=>{
+    const pct = Math.round(monthTotals[k].total/maxVal*100);
+    return '<div class="bar-col">'
+      + '<div class="bar-val">'+fmtMoney(monthTotals[k].total).replace('.00','')+'</div>'
+      + '<div class="bar" style="height:'+Math.max(pct,2)+'%;background:linear-gradient(180deg,var(--gold),var(--rose));opacity:.85;" title="'+fmtMoney(monthTotals[k].total)+'"></div>'
+      + '<div class="bar-label">'+monthTotals[k].label+'</div>'
+      + '</div>';
+  }).join('');
+  barEl.innerHTML = '<div class="bar-chart">'+barCols+'</div>';
+
+  // Forecast panel
+  renderForecast();
+
+  // Sales list
+  const listEl = document.getElementById('salesListWrap');
+  if(!periodSales.length) { listEl.innerHTML='<div class="empty-state"><div class="empty-state-text">No sales in this period. Log your first sale above.</div></div>'; return; }
+  const sorted = [...periodSales].sort((a,b)=>b.date.localeCompare(a.date));
+  listEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 100px 110px 40px;gap:10px;padding:0 12px;margin-bottom:6px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Description</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Client</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Amount</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Status</span>
+      <span></span>
+    </div>
+    ${sorted.map(s=>`
+    <div class="sale-row">
+      <div>
+        <div style="font-weight:500;">${escHtml(s.description||'—')}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${fmtDate(s.date)} · ${s.category||''}</div>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);">${clientName(s.clientId)}</div>
+      <div style="font-family:Georgia,serif;font-size:15px;">${fmtMoney(s.amount)}</div>
+      <span class="badge badge-${s.paymentStatus==='Paid'?'accepted':s.paymentStatus==='Overdue'?'declined':s.paymentStatus==='Deposit Paid'?'sent':'pending'}">${s.paymentStatus}</span>
+      <div style="display:flex;gap:2px;">
+        <button class="btn btn-ghost btn-xs" onclick="openEditSaleModal('${s.id}')">&#9998;</button>
+        <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('sale','${s.id}')">&#10005;</button>
+      </div>
+    </div>
+  `).join('')}`;
+}
+
+function renderForecast() {
+  const quotes = getQuotes();
+  const el = document.getElementById('forecastWrap');
+  if(!el) return;
+
+  // Probability by status
+  const probs = { Draft: 0.15, Sent: 0.45, Accepted: 1.0, Declined: 0 };
+  const stageBonus = { Active:0.1, Proposal:0.05, Consultation:0.02, Inquiry:0, Delivered:0, 'Follow-up':0.05 };
+  const clients = getClients();
+
+  const forecast = quotes
+    .filter(q => q.status !== 'Declined' && q.status !== 'Accepted')
+    .map(q => {
+      const total = quoteTotal(q);
+      const client = clients.find(c=>c.id===q.clientId);
+      const stageB = stageBonus[client?.stage||'Inquiry']||0;
+      const prob = Math.min((probs[q.status]||0.15)+stageB, 1);
+      return { ...q, total, prob, weighted: total*prob };
+    })
+    .sort((a,b)=>b.weighted-a.weighted);
+
+  const totalPipeline = forecast.reduce((a,f)=>a+f.total,0);
+  const totalWeighted = forecast.reduce((a,f)=>a+f.weighted,0);
+  const acceptedRevenue = getSales().reduce((a,s)=>a+parseFloat(s.amount||0),0);
+
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:var(--ivory);border-radius:6px;padding:10px 12px;border:1px solid var(--ivory-dark);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Pipeline Value</div>
+        <div style="font-family:Georgia,serif;font-size:20px;margin-top:4px;">${fmtMoney(totalPipeline)}</div>
+      </div>
+      <div style="background:rgba(90,138,106,0.08);border-radius:6px;padding:10px 12px;border:1px solid rgba(90,138,106,0.2);">
+        <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Weighted Forecast</div>
+        <div style="font-family:Georgia,serif;font-size:20px;margin-top:4px;color:var(--success);">${fmtMoney(totalWeighted)}</div>
+      </div>
+    </div>
+    ${forecast.length ? forecast.slice(0,5).map(f=>`
+      <div class="forecast-row">
+        <div style="min-width:0;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(f.title)}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${clientName(f.clientId)} · ${f.status}</div>
+        </div>
+        <div style="text-align:right;min-width:70px;">
+          <div style="font-size:13px;font-weight:600;">${fmtMoney(f.weighted)}</div>
+          <div style="font-size:10px;color:var(--text-muted);">${Math.round(f.prob*100)}% prob</div>
+        </div>
+        <div style="min-width:60px;">
+          <div class="forecast-bar-wrap">
+            <div class="forecast-bar-fill" style="width:${Math.round(f.prob*100)}%;background:linear-gradient(90deg,var(--gold),var(--rose));"></div>
+          </div>
+        </div>
+      </div>
+    `).join('') : '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:20px 0;">No open quotes in pipeline</div>'}
+    <div style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.6;">Weighted by quote status + client stage. Actual closed revenue: <strong>${fmtMoney(acceptedRevenue)}</strong></div>
+  `;
+}
+
+// Sale modal
+function openAddSaleModal() {
+  populateClientSelects();
+  // Populate quote references
+  const qSel = document.getElementById('saleQuoteRef');
+  if(qSel) qSel.innerHTML = '<option value="">None</option>' + getQuotes().map(q=>`<option value="${q.id}">${clientName(q.clientId)} — ${q.title} (${fmtMoney(quoteTotal(q))})</option>`).join('');
+  document.getElementById('saleModalTitle').textContent = 'Log Sale';
+  document.getElementById('editSaleId').value = '';
+  ['saleAmount','saleDescription','saleNotes'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});
+  document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('saleCategory').value = 'Consultation';
+  document.getElementById('salePaymentStatus').value = 'Paid';
+  openModal('modal-sale');
+}
+
+function openEditSaleModal(id) {
+  const s = getSales().find(x=>x.id===id); if(!s) return;
+  populateClientSelects();
+  const qSel = document.getElementById('saleQuoteRef');
+  if(qSel) qSel.innerHTML = '<option value="">None</option>' + getQuotes().map(q=>`<option value="${q.id}">${clientName(q.clientId)} — ${q.title}</option>`).join('');
+  document.getElementById('saleModalTitle').textContent = 'Edit Sale';
+  document.getElementById('editSaleId').value = id;
+  document.getElementById('saleClientId').value = s.clientId||'';
+  document.getElementById('saleAmount').value = s.amount||0;
+  document.getElementById('saleDescription').value = s.description||'';
+  document.getElementById('saleDate').value = s.date||'';
+  document.getElementById('saleCategory').value = s.category||'Consultation';
+  document.getElementById('salePaymentStatus').value = s.paymentStatus||'Paid';
+  document.getElementById('saleNotes').value = s.notes||'';
+  if(qSel) qSel.value = s.quoteRef||'';
+  openModal('modal-sale');
+}
+
+function saveSale() {
+  const cid = document.getElementById('saleClientId').value;
+  const amount = parseFloat(document.getElementById('saleAmount').value)||0;
+  const date = document.getElementById('saleDate').value;
+  if(!cid||!date||!amount) { alert('Please fill in client, amount, and date.'); return; }
+  const sales = getSales();
+  const editId = document.getElementById('editSaleId').value;
+  const data = {
+    clientId:cid, amount, date,
+    description: document.getElementById('saleDescription').value.trim(),
+    category: document.getElementById('saleCategory').value,
+    paymentStatus: document.getElementById('salePaymentStatus').value,
+    notes: document.getElementById('saleNotes').value.trim(),
+    quoteRef: document.getElementById('saleQuoteRef').value,
+  };
+  if(editId) { const i=sales.findIndex(x=>x.id===editId); if(i>=0) sales[i]={...sales[i],...data}; }
+  else sales.push({id:uid(),...data});
+  save(KEYS.sales,sales);
+  closeModal('modal-sale');
+  if(document.getElementById('panel-sales').classList.contains('active')) renderSales();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  ORDER TRACKER
+// ═══════════════════════════════════════════════════════════════
+
+let orderClientFilter = '', orderStatusFilterVal = '';
+
+function filterOrders(val) { orderClientFilter=val; renderOrders(); }
+function filterOrderStatus(val) { orderStatusFilterVal=val; renderOrders(); }
+
+function renderOrders() {
+  populateClientSelects();
+  const sel = document.getElementById('orderClientFilter');
+  if(sel) sel.value = orderClientFilter;
+  const sSel = document.getElementById('orderStatusFilter');
+  if(sSel) sSel.value = orderStatusFilterVal;
+
+  let orders = getOrders();
+  if(orderClientFilter) orders = orders.filter(o=>o.clientId===orderClientFilter);
+  if(orderStatusFilterVal) orders = orders.filter(o=>o.status===orderStatusFilterVal);
+
+  // KPIs
+  const all = getOrders();
+  const active = all.filter(o=>o.status!=='Delivered'&&o.status!=='Cancelled');
+  const ready = all.filter(o=>o.status==='Ready');
+  const overdue = all.filter(o=>o.status!=='Delivered'&&o.status!=='Cancelled'&&o.dueDate&&new Date(o.dueDate+'T12:00:00')<new Date());
+  document.getElementById('orderKpis').innerHTML = `
+    <div class="kpi-box"><div class="kpi-label">Active Orders</div><div class="kpi-value">${active.length}</div><div class="kpi-sub">${all.length} total</div></div>
+    <div class="kpi-box"><div class="kpi-label">Ready to Collect</div><div class="kpi-value kpi-up">${ready.length}</div><div class="kpi-sub">awaiting pickup/delivery</div></div>
+    <div class="kpi-box"><div class="kpi-label">Overdue</div><div class="kpi-value ${overdue.length>0?'kpi-down':''}">${overdue.length}</div><div class="kpi-sub">past expected date</div></div>
+  `;
+
+  const wrap = document.getElementById('ordersWrap');
+  if(!orders.length) { wrap.innerHTML='<div class="empty-state"><div class="empty-state-icon">&#9723;</div><div class="empty-state-text">No orders found. Add your first order above.</div></div>'; return; }
+
+  const statusColors = {Ordered:'var(--gold)',  'In Production':'#8A7AA8', Ready:'var(--success)', Delivered:'var(--text-muted)', Cancelled:'var(--danger)'};
+  const dotClass = {Ordered:'dot-ordered','In Production':'dot-production',Ready:'dot-ready',Delivered:'dot-delivered',Cancelled:'dot-delivered'};
+
+  const sorted = [...orders].sort((a,b)=>{
+    const order = ['Ready','In Production','Ordered','Delivered','Cancelled'];
+    return order.indexOf(a.status)-order.indexOf(b.status);
+  });
+
+  wrap.innerHTML = `
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 100px 80px;gap:10px;padding:10px 14px 6px;border-bottom:2px solid var(--ivory-dark);margin-bottom:4px;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Item</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Client</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Supplier</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Due</span>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">Status</span>
+      <span></span>
+    </div>
+    ${sorted.map(o=>{
+      const isOverdue = o.status!=='Delivered'&&o.status!=='Cancelled'&&o.dueDate&&new Date(o.dueDate+'T12:00:00')<new Date();
+      return `<div class="order-row" style="${isOverdue?'border-color:rgba(192,84,74,0.35);background:rgba(192,84,74,0.03);':''}">
+        <div>
+          <div style="font-weight:500;">${escHtml(o.item)}</div>
+          <div style="font-size:11px;color:var(--text-muted);">${o.category}${o.qty>1?' · Qty '+o.qty:''}${o.cost?' · Cost '+fmtMoney(o.cost*o.qty):''}</div>
+          ${o.notes?`<div style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-top:2px;">${escHtml(o.notes)}</div>`:''}
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);">${clientName(o.clientId)}</div>
+        <div style="font-size:12px;color:var(--text-secondary);">${o.supplier||'—'}</div>
+        <div style="font-size:12px;${isOverdue?'color:var(--danger);font-weight:600;':''}">${o.dueDate?fmtDate(o.dueDate):'—'}${isOverdue?' ⚠':''}</div>
+        <div>
+          <select class="form-select" style="font-size:11px;padding:4px 6px;width:100%;" onchange="updateOrderStatus('${o.id}',this.value)">
+            ${['Ordered','In Production','Ready','Delivered','Cancelled'].map(s=>`<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div style="display:flex;gap:3px;">
+          <button class="btn btn-ghost btn-xs" onclick="openEditOrderModal('${o.id}')">&#9998;</button>
+          <button class="btn btn-ghost btn-xs" style="color:var(--danger);" onclick="confirmDelete('order','${o.id}')">&#10005;</button>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function updateOrderStatus(id, status) {
+  const orders = getOrders();
+  const o = orders.find(x=>x.id===id); if(!o) return;
+  o.status = status;
+  save(KEYS.orders, orders);
+}
+
+function openAddOrderModal() {
+  populateClientSelects();
+  document.getElementById('orderModalTitle').textContent = 'New Order';
+  document.getElementById('editOrderId').value = '';
+  ['orderItem','orderSupplier','orderNotes'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});
+  ['orderCost','orderPrice'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});
+  document.getElementById('orderQty').value = 1;
+  document.getElementById('orderDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('orderDue').value = '';
+  document.getElementById('orderStatus').value = 'Ordered';
+  document.getElementById('orderCategory').value = 'Clothing';
+  openModal('modal-order');
+}
+
+function openEditOrderModal(id) {
+  const o = getOrders().find(x=>x.id===id); if(!o) return;
+  populateClientSelects();
+  document.getElementById('orderModalTitle').textContent = 'Edit Order';
+  document.getElementById('editOrderId').value = id;
+  document.getElementById('orderClientId').value = o.clientId||'';
+  document.getElementById('orderItem').value = o.item||'';
+  document.getElementById('orderSupplier').value = o.supplier||'';
+  document.getElementById('orderCategory').value = o.category||'Clothing';
+  document.getElementById('orderStatus').value = o.status||'Ordered';
+  document.getElementById('orderCost').value = o.cost||'';
+  document.getElementById('orderPrice').value = o.price||'';
+  document.getElementById('orderQty').value = o.qty||1;
+  document.getElementById('orderDate').value = o.orderDate||'';
+  document.getElementById('orderDue').value = o.dueDate||'';
+  document.getElementById('orderNotes').value = o.notes||'';
+  openModal('modal-order');
+}
+
+function saveOrder() {
+  const cid = document.getElementById('orderClientId').value;
+  const item = document.getElementById('orderItem').value.trim();
+  if(!cid||!item) { alert('Please select a client and enter an item description.'); return; }
+  const orders = getOrders();
+  const editId = document.getElementById('editOrderId').value;
+  const data = {
+    clientId:cid, item,
+    supplier: document.getElementById('orderSupplier').value.trim(),
+    category: document.getElementById('orderCategory').value,
+    status: document.getElementById('orderStatus').value,
+    cost: parseFloat(document.getElementById('orderCost').value)||0,
+    price: parseFloat(document.getElementById('orderPrice').value)||0,
+    qty: parseInt(document.getElementById('orderQty').value)||1,
+    orderDate: document.getElementById('orderDate').value,
+    dueDate: document.getElementById('orderDue').value,
+    notes: document.getElementById('orderNotes').value.trim(),
+  };
+  if(editId) { const i=orders.findIndex(x=>x.id===editId); if(i>=0) orders[i]={...orders[i],...data}; }
+  else orders.push({id:uid(),...data});
+  save(KEYS.orders, orders);
+  closeModal('modal-order');
+  if(document.getElementById('panel-orders').classList.contains('active')) renderOrders();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SETTINGS / INTEGRATIONS
+// ═══════════════════════════════════════════════════════════════
+
+function renderSettings() {
+  const cfg = getIntegrations();
+  const fields = [
+    ['calendly-key', 'calendlyKey'], ['typeform-key','typeformKey'],
+    ['typeform-form-id','typeformFormId'], ['ac-url','acUrl'], ['ac-key','acKey']
+  ];
+  fields.forEach(([elId, cfgKey]) => {
+    const el = document.getElementById(elId);
+    if(el && !el.value) el.value = cfg[cfgKey]||'';
+  });
+  updateIntegrationStatus('calendly', !!cfg.calendlyKey);
+  updateIntegrationStatus('typeform', !!cfg.typeformKey);
+  updateIntegrationStatus('ac', !!(cfg.acUrl&&cfg.acKey));
+  const tb = document.getElementById('calendly-test-btn');
+  if(tb) tb.style.display = cfg.calendlyKey ? 'inline-flex' : 'none';
+  const asSel = document.getElementById('autoSyncSetting');
+  if(asSel) asSel.value = cfg.autoSync||'off';
+  const lsEl = document.getElementById('lastSyncedDisplay');
+  if(lsEl) lsEl.textContent = cfg.lastSynced ? fmtDateTime(cfg.lastSynced) : 'Never';
+}
+
+function updateIntegrationStatus(service, connected) {
+  const el = document.getElementById(service+'-status'); if(!el) return;
+  el.textContent = connected ? 'Connected ✓' : 'Not connected';
+  el.className = 'integration-status '+(connected?'connected':'disconnected');
+}
+
+function onKeyInput(service) {
+  let connected = false;
+  if(service==='calendly') connected = !!(document.getElementById('calendly-key')?.value.trim());
+  else if(service==='typeform') connected = !!(document.getElementById('typeform-key')?.value.trim());
+  else if(service==='ac') connected = !!(document.getElementById('ac-url')?.value.trim()&&document.getElementById('ac-key')?.value.trim());
+  updateIntegrationStatus(service, connected);
+}
+
+function saveIntegrationKey(service) {
+  const cfg = getIntegrations();
+  if(service==='calendly') {
+    cfg.calendlyKey = document.getElementById('calendly-key').value.trim();
+    const tb = document.getElementById('calendly-test-btn');
+    if(tb) tb.style.display = cfg.calendlyKey ? 'inline-flex' : 'none';
+  } else if(service==='typeform') {
+    cfg.typeformKey = document.getElementById('typeform-key').value.trim();
+    cfg.typeformFormId = document.getElementById('typeform-form-id').value.trim();
+  } else if(service==='ac') {
+    cfg.acUrl = document.getElementById('ac-url').value.trim().replace(/\/+$/,'');
+    cfg.acKey = document.getElementById('ac-key').value.trim();
+  }
+  saveIntegrations(cfg);
+  updateIntegrationStatus(service,
+    service==='calendly'?!!cfg.calendlyKey:
+    service==='typeform'?!!cfg.typeformKey:
+    !!(cfg.acUrl&&cfg.acKey)
+  );
+  showSyncResult(service+'-result','success','Key saved. Click Sync Now to import data.');
+}
+
+function clearKey(service) {
+  const cfg = getIntegrations();
+  if(service==='calendly'){cfg.calendlyKey='';const el=document.getElementById('calendly-key');if(el) el.value='';}
+  else if(service==='typeform'){cfg.typeformKey='';cfg.typeformFormId='';['typeform-key','typeform-form-id'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});}
+  else if(service==='ac'){cfg.acUrl='';cfg.acKey='';['ac-url','ac-key'].forEach(id=>{const el=document.getElementById(id);if(el) el.value='';});}
+  saveIntegrations(cfg);
+  updateIntegrationStatus(service, false);
+  showSyncResult(service+'-result','info','Key cleared.');
+}
+
+function saveAutoSync(val){const cfg=getIntegrations();cfg.autoSync=val;saveIntegrations(cfg);}
+function toggleKeyVisibility(inputId,btn){const el=document.getElementById(inputId);if(!el)return;el.type=el.type==='password'?'text':'password';btn.textContent=el.type==='password'?'Show':'Hide';}
+
+function showSyncResult(elId,type,msg) {
+  const el = document.getElementById(elId); if(!el) return;
+  const cls = type==='success'?'sync-banner':type==='error'?'sync-error':'sync-loading';
+  const icon = type==='success'?'✓':type==='error'?'✕':'<span class="spinner"></span>';
+  el.innerHTML = `<div class="${cls}">${icon} ${msg}</div>`;
+  if(type!=='loading') setTimeout(()=>{ if(el.innerHTML) el.innerHTML=''; },5000);
+}
+
+// ─── Calendly Sync
+async function syncCalendly() {
+  const cfg = getIntegrations();
+  const key = cfg.calendlyKey;
+  const resultId = 'calendly-result';
+  const statusId = 'calSyncStatus';
+  const set = (type,msg) => {
+    showSyncResult(resultId,type,msg);
+    const s=document.getElementById(statusId);
+    if(s) s.innerHTML = type==='loading'?`<div class="sync-loading mb-8"><span class="spinner"></span> ${msg}</div>`: type==='success'?`<div class="sync-banner mb-8">✓ ${msg}</div>`:`<div class="sync-error mb-8">✕ ${msg}</div>`;
+  };
+  if(!key){set('error','No Calendly key saved. Go to Integrations → Calendly to add your key.');return;}
+  set('loading','Connecting to Calendly…');
+  try {
+    const meRes = await fetch('https://api.calendly.com/users/me',{headers:{Authorization:'Bearer '+key}});
+    if(!meRes.ok) throw new Error('Authentication failed — check your token');
+    const meData = await meRes.json();
+    const userUri = meData.resource?.uri;
+    if(!userUri) throw new Error('Could not read user data');
+    set('loading','Fetching upcoming bookings…');
+    const now = new Date().toISOString();
+    const future = new Date(); future.setDate(future.getDate()+60);
+    const params = new URLSearchParams({user:userUri,min_start_time:now,max_start_time:future.toISOString(),status:'active',count:'50'});
+    const evRes = await fetch('https://api.calendly.com/scheduled_events?'+params,{headers:{Authorization:'Bearer '+key}});
+    if(!evRes.ok) throw new Error('Could not fetch events');
+    const evData = await evRes.json();
+    const events = evData.collection||[];
+    let added=0,skipped=0;
+    const existingEvents = getEvents();
+    const existingClients = getClients();
+    for(const ev of events) {
+      const calId = 'cal_'+ev.uri.split('/').pop();
+      if(existingEvents.find(e=>e.externalId===calId)){skipped++;continue;}
+      const startDt = new Date(ev.start_time);
+      const date = startDt.toISOString().split('T')[0];
+      const time = startDt.toLocaleTimeString('en',{hour:'2-digit',minute:'2-digit',hour12:false});
+      let clientId='',inviteeName='',inviteeEmail='';
+      try {
+        const invRes = await fetch(ev.uri+'/invitees',{headers:{Authorization:'Bearer '+key}});
+        if(invRes.ok){
+          const invData = await invRes.json();
+          const inv = (invData.collection||[])[0];
+          if(inv){
+            inviteeName = inv.name||''; inviteeEmail = inv.email||'';
+            const match = existingClients.find(c=>c.email&&c.email.toLowerCase()===inviteeEmail.toLowerCase());
+            if(match) clientId=match.id;
+            else if(inviteeName||inviteeEmail){
+              const parts = inviteeName.split(' ');
+              const nc = {id:uid(),firstName:parts[0]||'Unknown',lastName:parts.slice(1).join(' ')||'',email:inviteeEmail,phone:'',status:'Prospect',stage:'Inquiry',startDate:date,budget:'',summary:'Auto-created from Calendly booking.',source:'calendly'};
+              existingClients.push(nc); save(KEYS.clients,existingClients); clientId=nc.id;
+            }
+          }
+        }
+      } catch(e){}
+      const location = typeof ev.location==='object'?ev.location?.location||ev.location?.join_url||'':ev.location||'';
+      existingEvents.push({id:uid(),externalId:calId,clientId,title:ev.name||'Calendly Booking',type:'Consultation',date,time,location,notes:inviteeName?'Booked by '+inviteeName+(inviteeEmail?' ('+inviteeEmail+')':''):'',source:'calendly'});
+      added++;
+    }
+    save(KEYS.events,existingEvents);
+    const cfg2=getIntegrations(); cfg2.lastSynced=new Date().toISOString(); saveIntegrations(cfg2);
+    set('success',`Sync complete — ${added} new booking${added!==1?'s':''} imported${skipped?' ('+skipped+' already existed)':''}.`);
+    if(document.getElementById('panel-events').classList.contains('active')) renderEvents();
+    if(document.getElementById('panel-clients').classList.contains('active')) renderClients();
+    if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+    const lsEl=document.getElementById('lastSyncedDisplay'); if(lsEl) lsEl.textContent=fmtDateTime(cfg2.lastSynced);
+  } catch(err){ set('error','Calendly error: '+err.message); }
+}
+
+// ─── Typeform Sync
+async function syncTypeform() {
+  const cfg = getIntegrations(); const key = cfg.typeformKey;
+  if(!key){showSyncResult('typeform-result','error','No Typeform key saved.');return;}
+  showSyncResult('typeform-result','loading','Connecting to Typeform…');
+  try {
+    const formId = cfg.typeformFormId;
+    let formsToSync = [];
+    if(formId){ formsToSync=[formId]; }
+    else {
+      const fRes = await fetch('https://api.typeform.com/forms?page_size=10',{headers:{Authorization:'Bearer '+key}});
+      if(!fRes.ok) throw new Error('Could not authenticate — check your token');
+      const fData = await fRes.json();
+      formsToSync = (fData.items||[]).map(f=>f.id);
+    }
+    if(!formsToSync.length) throw new Error('No forms found');
+    let added=0,skipped=0;
+    const existingClients=getClients(); const existingNotes=getNotes();
+    for(const fid of formsToSync){
+      const rRes = await fetch(`https://api.typeform.com/forms/${fid}/responses?page_size=25&sort=submitted_at,desc`,{headers:{Authorization:'Bearer '+key}});
+      if(!rRes.ok) continue;
+      const rData = await rRes.json();
+      for(const resp of (rData.items||[])){
+        const respId='tf_'+resp.response_id;
+        if(existingClients.find(c=>c.externalId===respId)||existingNotes.find(n=>n.externalId===respId)){skipped++;continue;}
+        const answers=resp.answers||[];
+        let firstName='',lastName='',email='',phone='';
+        const answerLines=[];
+        for(const ans of answers){
+          const field=(ans.field?.ref||ans.field?.id||'').toLowerCase();
+          const val=ans.text||ans.email||ans.phone_number||(ans.number!=null?String(ans.number):'')||ans.boolean?.toString()||ans.choice?.label||ans.choices?.labels?.join(', ')||'';
+          if(!val) continue;
+          if(field.includes('first')) firstName=val;
+          else if(field.includes('last')) lastName=val;
+          else if(field.includes('name')&&!firstName){const p=val.split(' ');firstName=p[0];lastName=p.slice(1).join(' ');}
+          if(field.includes('email')||ans.type==='email') email=val;
+          if(field.includes('phone')||ans.type==='phone_number') phone=val;
+          answerLines.push((ans.field?.title||field)+': '+val);
+        }
+        if(!firstName&&!email){skipped++;continue;}
+        const match=email?existingClients.find(c=>c.email&&c.email.toLowerCase()===email.toLowerCase()):null;
+        let clientId='';
+        if(match){clientId=match.id;}
+        else{
+          const nc={id:uid(),externalId:respId,firstName:firstName||'Unknown',lastName:lastName||'',email,phone,status:'Prospect',stage:'Inquiry',startDate:new Date(resp.submitted_at).toISOString().split('T')[0],budget:'',summary:'Submitted intake form.',source:'typeform'};
+          existingClients.push(nc); save(KEYS.clients,existingClients); clientId=nc.id;
+        }
+        if(answerLines.length){
+          existingNotes.push({id:uid(),externalId:respId,clientId,tag:'general',text:'Typeform submission ('+fmtDate(resp.submitted_at)+'):\n\n'+answerLines.join('\n'),createdAt:resp.submitted_at});
+          save(KEYS.notes,existingNotes);
+        }
+        added++;
+      }
+    }
+    const cfg2=getIntegrations(); cfg2.lastSynced=new Date().toISOString(); saveIntegrations(cfg2);
+    showSyncResult('typeform-result','success',`Sync complete — ${added} new submission${added!==1?'s':''} imported${skipped?' ('+skipped+' already existed)':''}.`);
+    if(document.getElementById('panel-clients').classList.contains('active')) renderClients();
+    if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+  } catch(err){ showSyncResult('typeform-result','error','Typeform error: '+err.message); }
+}
+
+// ─── ActiveCampaign Sync
+async function syncActiveCampaign() {
+  const cfg = getIntegrations(); const url=cfg.acUrl,key=cfg.acKey;
+  if(!url||!key){showSyncResult('ac-result','error','Save both your AC URL and API Key first.');return;}
+  showSyncResult('ac-result','loading','Connecting to ActiveCampaign…');
+  try {
+    const res = await fetch(`${url}/api/3/contacts?limit=100&orders[cdate]=DESC`,{headers:{'Api-Token':key,'Content-Type':'application/json'}});
+    if(!res.ok) throw new Error('Authentication failed — check your URL and API key');
+    const data = await res.json();
+    let added=0,skipped=0;
+    const existingClients=getClients();
+    for(const contact of (data.contacts||[])){
+      const acId='ac_'+contact.id;
+      if(existingClients.find(c=>c.externalId===acId)){skipped++;continue;}
+      const email=(contact.email||'').toLowerCase();
+      if(email&&existingClients.find(c=>c.email&&c.email.toLowerCase()===email)){skipped++;continue;}
+      const nc={id:uid(),externalId:acId,firstName:contact.firstName||contact.first_name||'',lastName:contact.lastName||contact.last_name||'',email:contact.email||'',phone:contact.phone||'',status:'Prospect',stage:'Inquiry',startDate:new Date(contact.cdate||Date.now()).toISOString().split('T')[0],budget:'',summary:'Imported from ActiveCampaign.',source:'ac'};
+      if(!nc.firstName&&!nc.email) continue;
+      existingClients.push(nc); added++;
+    }
+    save(KEYS.clients,existingClients);
+    const cfg2=getIntegrations(); cfg2.lastSynced=new Date().toISOString(); saveIntegrations(cfg2);
+    showSyncResult('ac-result','success',`Sync complete — ${added} contact${added!==1?'s':''} imported${skipped?' ('+skipped+' already existed)':''}.`);
+    if(document.getElementById('panel-clients').classList.contains('active')) renderClients();
+    if(document.getElementById('panel-dashboard').classList.contains('active')) renderDashboard();
+    const lsEl=document.getElementById('lastSyncedDisplay'); if(lsEl) lsEl.textContent=fmtDateTime(cfg2.lastSynced);
+  } catch(err){ showSyncResult('ac-result','error','ActiveCampaign error: '+err.message); }
+}
+
+async function testCalendly(){
+  const key=document.getElementById('calendly-key')?.value.trim()||getIntegrations().calendlyKey;
+  if(!key) return;
+  showSyncResult('calendly-result','loading','Testing connection…');
+  try{
+    const res=await fetch('https://api.calendly.com/users/me',{headers:{Authorization:'Bearer '+key}});
+    if(!res.ok) throw new Error('Token rejected');
+    const data=await res.json();
+    showSyncResult('calendly-result','success','Connected as '+data.resource?.name+' ('+data.resource?.email+')');
+  } catch(e){ showSyncResult('calendly-result','error','Failed: '+e.message); }
+}
+
+async function syncAllIntegrations(){
+  const cfg=getIntegrations();
+  const banner=document.getElementById('syncStatusBanner');
+  if(banner) banner.innerHTML='<div class="sync-loading" style="margin-bottom:12px;"><span class="spinner"></span> Syncing all integrations…</div>';
+  if(cfg.calendlyKey) await syncCalendly();
+  if(cfg.typeformKey) await syncTypeform();
+  if(cfg.acUrl&&cfg.acKey) await syncActiveCampaign();
+  if(banner){ banner.innerHTML='<div class="sync-banner" style="margin-bottom:12px;">✓ Sync complete — '+fmtDateTime(new Date().toISOString())+'</div>'; setTimeout(()=>{banner.innerHTML='';},6000); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+
+initData();
+populateClientSelects();
+renderDashboard();
+</script>
+</body>
+</html>
