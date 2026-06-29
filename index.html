@@ -3322,7 +3322,8 @@ async function syncActiveCampaign() {
   if(!url||!key){showSyncResult('ac-result','error','Save both your AC URL and API Key first.');return;}
   showSyncResult('ac-result','loading','Connecting to ActiveCampaign…');
   try {
-    const res = await fetch(`${url}/api/3/contacts?limit=100&orders[cdate]=DESC`,{headers:{'Api-Token':key,'Content-Type':'application/json'}});
+    const proxyUrl = 'https://ac-proxy.service-0c4.workers.dev/?url='+encodeURIComponent(url+'/api/3/contacts?limit=100&orders[cdate]=DESC');
+    const res = await fetch(proxyUrl,{headers:{'Api-Token':key,'Content-Type':'application/json'}});
     if(!res.ok) throw new Error('Authentication failed — check your URL and API key');
     const data = await res.json();
     let added=0,skipped=0;
